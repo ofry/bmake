@@ -116,19 +116,40 @@ __RCSID("$NetBSD: main.c,v 1.273 2017/10/28 21:54:54 sjg Exp $");
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/param.h>
+#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
+#else
+#include "headers-mingw/resource.h"
+#endif
 #include <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #if defined(MAKE_NATIVE) && defined(HAVE_SYSCTL)
 #include <sys/sysctl.h>
 #endif
+
+#ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
+#else
+#include "headers-mingw/utsname.h"
+#endif
 #include "wait.h"
 
 #include <errno.h>
 #include <signal.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/signal.h"
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT SIGTERM
+#endif
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/stdlib.h"
+#endif
 #include <time.h>
 #include <ctype.h>
 
@@ -1020,7 +1041,7 @@ main(int argc, char **argv)
 		progname++;
 	else
 		progname = argv[0];
-#if defined(MAKE_NATIVE) || (defined(HAVE_SETRLIMIT) && defined(RLIMIT_NOFILE))
+#if defined(HAVE_SETRLIMIT) && defined(RLIMIT_NOFILE)
 	/*
 	 * get rid of resource limit on file descriptors
 	 */
@@ -1751,6 +1772,7 @@ bad:
     *res = '\0';
     return res;
 }
+#endif
 
 /*-
  * Error --

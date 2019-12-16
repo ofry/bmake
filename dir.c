@@ -137,6 +137,9 @@ __RCSID("$NetBSD: dir.c,v 1.73 2018/07/12 18:03:31 christos Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 
 #include <dirent.h>
 #include <errno.h>

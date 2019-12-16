@@ -124,6 +124,9 @@ __RCSID("$NetBSD: var.c,v 1.221 2018/12/21 05:50:19 sjg Exp $");
  */
 
 #include    <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #ifndef NO_REGEX
 #include    <sys/types.h>
 #include    <regex.h>

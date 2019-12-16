@@ -56,6 +56,9 @@ __RCSID("$NetBSD: trace.c,v 1.11 2008/12/28 18:31:51 christos Exp $");
 
 #include <stdio.h>
 #include <unistd.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/unistd.h"
+#endif
 
 #include "make.h"
 #include "job.h"

@@ -36,7 +36,14 @@
 # include "config.h"
 #endif
 #include <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_ioctl.h"
+#else
 #include <sys/ioctl.h>
+#endif
 #ifdef HAVE_LIBGEN_H
 #include <libgen.h>
 #elif !defined(HAVE_DIRNAME)
@@ -1611,8 +1618,10 @@ meta_compat_start(void)
     if (pipe(childPipe) < 0)
 	Punt("Cannot create pipe: %s", strerror(errno));
     /* Set close-on-exec flag for both */
+#if defined(F_SETFD) && defined(FD_CLOEXEC)
     (void)fcntl(childPipe[0], F_SETFD, FD_CLOEXEC);
     (void)fcntl(childPipe[1], F_SETFD, FD_CLOEXEC);
+#endif
 }
 
 void

@@ -134,6 +134,9 @@ __RCSID("$NetBSD: arch.c,v 1.70 2017/04/16 20:49:09 riastradh Exp $");
 #endif
 #include    <sys/types.h>
 #include    <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #include    <sys/time.h>
 #include    <sys/param.h>
 #ifdef HAVE_AR_H

@@ -40,7 +40,9 @@
 #include <sys/cdefs.h>
 #include <sys/param.h>
 #include <sys/stat.h>
-
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #include <errno.h>
 #ifdef HAVE_STDLIB_H
 # include <stdlib.h>
@@ -49,7 +51,10 @@
 # include <string.h>
 #endif
 #ifdef HAVE_UNISTD_H
-# include <unistd.h>
+#include <unistd.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/unistd.h"
+#endif
 #endif
 
 #ifndef __restrict

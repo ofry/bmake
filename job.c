@@ -138,23 +138,36 @@ __RCSID("$NetBSD: job.c,v 1.195 2018/05/13 22:13:28 sjg Exp $");
 #endif
 #include <sys/types.h>
 #include <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #include <sys/file.h>
 #include <sys/time.h>
 #include "wait.h"
 
 #include <assert.h>
 #include <errno.h>
-#if !defined(USE_SELECT) && defined(HAVE_POLL_H)
-#include <poll.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+# include "headers-mingw/poll.h"
 #else
-#ifndef USE_SELECT			/* no poll.h */
-# define USE_SELECT
-#endif
-#if defined(HAVE_SYS_SELECT_H)
-# include <sys/select.h>
-#endif
+# if !defined(USE_SELECT) && defined(HAVE_POLL_H)
+#  include <poll.h>
+# else
+#  ifndef USE_SELECT			/* no poll.h */
+#   define USE_SELECT
+#  endif
+# endif
+# if defined(HAVE_SYS_SELECT_H)
+#  include <sys/select.h>
+# endif
 #endif
 #include <signal.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/signal.h"
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT SIGTERM
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <utime.h>
@@ -437,6 +450,7 @@ JobCreatePipe(Job *job, int minfd)
     }
     
     /* Set close-on-exec flag for both */
+#if defined(F_SETFD) && defined(FD_CLOEXEC) && defined(F_GETFL) && defined(F_SETFL)
     if (fcntl(job->jobPipe[0], F_SETFD, FD_CLOEXEC) == -1)
 	Punt("Cannot set close-on-exec: %s", strerror(errno));
     if (fcntl(job->jobPipe[1], F_SETFD, FD_CLOEXEC) == -1)
@@ -454,6 +468,7 @@ JobCreatePipe(Job *job, int minfd)
     flags |= O_NONBLOCK;
     if (fcntl(job->jobPipe[0], F_SETFL, flags) == -1)
 	Punt("Cannot set flags: %s", strerror(errno));
+#endif
 }
 
 /*-
@@ -1384,15 +1399,17 @@ JobExec(Job *job, char **argv)
 	    execError("dup2", "job->cmdFILE");
 	    _exit(1);
 	}
+#if defined(F_SETFD)
 	if (fcntl(0, F_SETFD, 0) == -1) {
 	    execError("fcntl clear close-on-exec", "stdin");
 	    _exit(1);
 	}
+#endif
 	if (lseek(0, (off_t)0, SEEK_SET) == -1) {
 	    execError("lseek to 0", "stdin");
 	    _exit(1);
 	}
-
+#if defined(F_SETFD)
 	if (job->node->type & (OP_MAKE | OP_SUBMAKE)) {
 		/*
 		 * Pass job token pipe to submakes.
@@ -1406,6 +1423,7 @@ JobExec(Job *job, char **argv)
 		    _exit(1);
 		}
 	}
+#endif
 	
 	/*
 	 * Set up the child's output to be routed through the pipe
@@ -1421,10 +1439,12 @@ JobExec(Job *job, char **argv)
 	 * it before routing the shell's error output to the same place as
 	 * its standard output.
 	 */
+#if defined(F_SETFD)
 	if (fcntl(1, F_SETFD, 0) == -1) {
 	    execError("clear close-on-exec", "stdout");
 	    _exit(1);
 	}
+#endif
 	if (dup2(1, 2) == -1) {
 	    execError("dup2", "1, 2");
 	    _exit(1);
@@ -1640,7 +1660,9 @@ JobStart(GNode *gn, int flags)
 	if (job->cmdFILE == NULL) {
 	    Punt("Could not fdopen %s", tfile);
 	}
+#if defined(F_SETFD)
 	(void)fcntl(FILENO(job->cmdFILE), F_SETFD, FD_CLOEXEC);
+#endif
 	/*
 	 * Send the commands to the command file, flush all its buffers then
 	 * rewind and remove the thing.
@@ -2061,9 +2083,11 @@ JobReapChild(pid_t pid, WAIT_T status, Boolean isJobs)
 	}
 	if (!make_suspended) {
 	    switch (WSTOPSIG(status)) {
+#if defined(SIGTSTP)
 	    case SIGTSTP:
 		(void)printf("*** [%s] Suspended\n", job->node->name);
 		break;
+#endif
 	    case SIGSTOP:
 		(void)printf("*** [%s] Stopped\n", job->node->name);
 		break;
@@ -2299,11 +2323,13 @@ Job_Init(void)
     watchfd(&childExitJob);
 
     sigemptyset(&caught_signals);
+#if defined(SIGCHLD)
     /*
      * Install a SIGCHLD handler.
      */
     (void)bmake_signal(SIGCHLD, JobChildSig);
     sigaddset(&caught_signals, SIGCHLD);
+#endif
 
 #define ADDSIG(s,h)				\
     if (bmake_signal(s, SIG_IGN) != SIG_IGN) {	\
@@ -2316,7 +2342,9 @@ Job_Init(void)
      * JobPassSig will take care of calling JobInterrupt if appropriate.
      */
     ADDSIG(SIGINT, JobPassSig_int)
+#if defined(SIGHUP)
     ADDSIG(SIGHUP, JobPassSig_term)
+#endif
     ADDSIG(SIGTERM, JobPassSig_term)
     ADDSIG(SIGQUIT, JobPassSig_term)
 
@@ -2326,11 +2354,21 @@ Job_Init(void)
      * we're giving each job its own process group (since then it won't get
      * signals from the terminal driver as we own the terminal)
      */
+#if defined(SIGTSTP)
     ADDSIG(SIGTSTP, JobPassSig_suspend)
+#endif
+#if defined(SIGTTOU)
     ADDSIG(SIGTTOU, JobPassSig_suspend)
+#endif
+#if defined(SIGTTIN)
     ADDSIG(SIGTTIN, JobPassSig_suspend)
+#endif
+#if defined(SIGWINCH)
     ADDSIG(SIGWINCH, JobCondPassSig)
+#endif
+#if defined(SIGCONT)
     ADDSIG(SIGCONT, JobContinueSig)
+#endif
 #undef ADDSIG
 
     (void)Job_RunTarget(".BEGIN", NULL);
@@ -2345,16 +2383,30 @@ static void JobSigReset(void)
     }
 
     DELSIG(SIGINT)
+#if defined(SIGHUP)
     DELSIG(SIGHUP)
+#endif
     DELSIG(SIGQUIT)
     DELSIG(SIGTERM)
+#if defined(SIGTSTP)
     DELSIG(SIGTSTP)
+#endif
+#if defined(SIGTTOU)
     DELSIG(SIGTTOU)
+#endif
+#if defined(SIGTTIN)
     DELSIG(SIGTTIN)
+#endif
+#if defined(SIGWINCH)
     DELSIG(SIGWINCH)
+#endif
+#if defined(SIGCONT)
     DELSIG(SIGCONT)
+#endif
 #undef DELSIG
+#if defined(SIGCHLD)
     (void)bmake_signal(SIGCHLD, SIG_DFL);
+#endif
 }
 
 /*-
@@ -2789,9 +2841,11 @@ JobRestartJobs(void)
 		    (void)fflush(stdout);
 	    }
 	    job->job_suspended = 0;
+#if defined(SIGCONT)
 	    if (KILLPG(job->pid, SIGCONT) != 0 && DEBUG(JOB)) {
 		fprintf(debug_file, "Failed to send SIGCONT to %d\n", job->pid);
 	    }
+#endif
 	}
 	if (job->job_state == JOB_ST_FINISHED)
 	    /* Job exit deferred after calling waitpid() in a signal handler */
@@ -2886,8 +2940,10 @@ Job_ServerStart(int max_tokens, int jp_0, int jp_1)
 	/* Pipe passed in from parent */
 	tokenWaitJob.inPipe = jp_0;
 	tokenWaitJob.outPipe = jp_1;
+#if defined(F_SETFD)
 	(void)fcntl(jp_0, F_SETFD, FD_CLOEXEC);
 	(void)fcntl(jp_1, F_SETFD, FD_CLOEXEC);
+#endif
 	return;
     }
 

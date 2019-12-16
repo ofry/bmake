@@ -89,8 +89,17 @@
 # include "config.h"
 #endif
 #include <signal.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/signal.h"
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT SIGTERM
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/unistd.h"
+#endif
 #endif
 
 #if defined(sun) && !(defined(__svr4__) || defined(__SVR4))

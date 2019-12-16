@@ -24,7 +24,11 @@
  *      sjg@crufty.net
  */
 
+#ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
+#else
+#include "headers-mingw/sys_wait.h"
+#endif
 
 #ifdef sun386
 # define UNION_WAIT

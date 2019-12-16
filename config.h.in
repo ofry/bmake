@@ -12,6 +12,15 @@
 /* Define to 1 if you have the <ar.h> header file. */
 #undef HAVE_AR_H
 
+/* Define to 1 if you have the `atoll' function. */
+#undef HAVE_ATOLL
+
+/* Define to 1 if you have the `canonicalize_file_name' function. */
+#undef HAVE_CANONICALIZE_FILE_NAME
+
+/* Define to 1 if you have the `chown' function. */
+#undef HAVE_CHOWN
+
 /* Define to 1 if you have the declaration of `sys_siglist', and to 0 if you
    don't. */
 #undef HAVE_DECL_SYS_SIGLIST
@@ -26,6 +35,15 @@
 /* Define to 1 if you don't have `vprintf' but do have `_doprnt.' */
 #undef HAVE_DOPRNT
 
+/* Define to 1 if you have the `dup2' function. */
+#undef HAVE_DUP2
+
+/* Define to 1 if you have the `dup3' function. */
+#undef HAVE_DUP3
+
+/* Define to 1 if you have the `endusershell' function. */
+#undef HAVE_ENDUSERSHELL
+
 /* Define to 1 if you have the `err' function. */
 #undef HAVE_ERR
 
@@ -35,23 +53,98 @@
 /* Define to 1 if you have the <err.h> header file. */
 #undef HAVE_ERR_H
 
+/* Define to 1 if you have the `euidaccess' function. */
+#undef HAVE_EUIDACCESS
+
+/* Define to 1 if you have the `faccessat' function. */
+#undef HAVE_FACCESSAT
+
+/* Define to 1 if you have the `fchdir' function. */
+#undef HAVE_FCHDIR
+
+/* Define to 1 if you have the `fchmodat' function. */
+#undef HAVE_FCHMODAT
+
+/* Define to 1 if you have the `fchownat' function. */
+#undef HAVE_FCHOWNAT
+
+/* Define to 1 if you have the `fcntl' function. */
+#undef HAVE_FCNTL
+
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `fdatasync' function. */
+#undef HAVE_FDATASYNC
 
 /* Define to 1 if you have the `fork' function. */
 #undef HAVE_FORK
 
+/* Define to 1 if you have the `fstatat' function. */
+#undef HAVE_FSTATAT
+
+/* Define to 1 if you have the `fsync' function. */
+#undef HAVE_FSYNC
+
+/* Define to 1 if you have the `fsync' function. */
+#undef HAVE_FTRUNCATE
+
+/* Define to 1 if you have the `futimens' function. */
+#undef HAVE_FUTIMENS
+
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETCWD
+
+/* Define to 1 if you have the `getcwd' function. */
+#undef HAVE_GETDOMAINNAME
 
 /* Define to 1 if you have the `getenv' function. */
 #undef HAVE_GETENV
 
+/* Define to 1 if you have the `getgroups' function. */
+#undef HAVE_GETGROUPS
+
+/* Define to 1 if you have the `gethostname' function. */
+#undef HAVE_GETHOSTNAME
+
+/* Define to 1 if you have the `getloadavg' function. */
+#undef HAVE_GETLOADAVG
+
+/* Define to 1 if you have the `getlogin' function. */
+#undef HAVE_GETLOGIN
+
+/* Define to 1 if you have the `getlogin_r' function. */
+#undef HAVE_GETLOGIN_R
+
 /* Define to 1 if you have the `getopt' function. */
 #undef HAVE_GETOPT
 
+/* Define to 1 if you have the `getpass' function. */
+#undef HAVE_GETPASS
+
+/* Define to 1 if you have the `getrusage' function. */
+#undef HAVE_GETRUSAGE
+
+/* Define to 1 if you have the `getsubopt' function. */
+#undef HAVE_GETSUBOPT
+
+/* Define to 1 if you have the `getusershell' function. */
+#undef HAVE_GETUSERSHELL
+
 /* Define to 1 if you have the `getwd' function. */
 #undef HAVE_GETWD
+
+/* Define to 1 if you have the `grantpt' function. */
+#undef HAVE_GRANTPT
+
+/* Define to 1 if you have the `grantpt' function. */
+#undef HAVE_GROUP_MEMBER
+
+/* Define to 1 if you have the `initstate' function. */
+#undef HAVE_INITSTATE
+
+/* Define to 1 if you have the `initstate_r' function. */
+#undef HAVE_INITSTATE_R
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -59,14 +152,59 @@
 /* Define to 1 if you have the `killpg' function. */
 #undef HAVE_KILLPG
 
+/* Define to 1 if you have the `lchmod' function. */
+#undef HAVE_LCHMOD
+
+/* Define to 1 if you have the `lchown' function. */
+#undef HAVE_LCHOWN
+
 /* Define to 1 if you have the <libgen.h> header file. */
 #undef HAVE_LIBGEN_H
 
 /* Define to 1 if you have the <limits.h> header file. */
 #undef HAVE_LIMITS_H
 
+/* Define to 1 if you have the `link' function. */
+#undef HAVE_LINK
+
+/* Define to 1 if you have the `linkat' function. */
+#undef HAVE_LINKAT
+
+/* Define to 1 if you have the `lstat' function. */
+#undef HAVE_LSTAT
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `mkdirat' function. */
+#undef HAVE_MKDIRAT
+
+/* Define to 1 if you have the `mkdtemp' function. */
+#undef HAVE_MKDTEMP
+
+/* Define to 1 if you have the `mkfifo' function. */
+#undef HAVE_MKFIFO
+
+/* Define to 1 if you have the `mkfifoat' function. */
+#undef HAVE_MKFIFOAT
+
+/* Define to 1 if you have the `mknod' function. */
+#undef HAVE_MKNOD
+
+/* Define to 1 if you have the `mknodat' function. */
+#undef HAVE_MKNODAT
+
+/* Define to 1 if you have the `mkostemp' function. */
+#undef HAVE_MKOSTEMP
+
+/* Define to 1 if you have the `mkostemps' function. */
+#undef HAVE_MKOSTEMPS
+
+/* Define to 1 if you have the `mkstemp' function. */
+#undef HAVE_MKSTEMP
+
+/* Define to 1 if you have the `mkstemps' function. */
+#undef HAVE_MKSTEMPS
 
 /* Define to 1 if you have the `mmap' function. */
 #undef HAVE_MMAP
@@ -74,20 +212,77 @@
 /* Define to 1 if you have the <ndir.h> header file, and it defines `DIR'. */
 #undef HAVE_NDIR_H
 
+/* Define to 1 if you have the `openat' function. */
+#undef HAVE_OPENAT
+
 /* Define to 1 if you have the <paths.h> header file. */
 #undef HAVE_PATHS_H
+
+/* Define to 1 if you have the `pipe' function. */
+#undef HAVE_PIPE
+
+/* Define to 1 if you have the `pipe2' function. */
+#undef HAVE_PIPE2
 
 /* Define to 1 if you have the <poll.h> header file. */
 #undef HAVE_POLL_H
 
+/* Define to 1 if you have the `poll' function. */
+#undef HAVE_POLL
+
+/* Define to 1 if you have the `posix_openpt' function. */
+#undef HAVE_POSIX_OPENPT
+
+/* Define to 1 if you have the `pread' function. */
+#undef HAVE_PREAD
+
+/* Define to 1 if you have the `pthread_sigmask' function. */
+#undef HAVE_PTHREAD_SIGMASK
+
+/* Define to 1 if you have the `ptsname' function. */
+#undef HAVE_PTSNAME
+
+/* Define to 1 if you have the `ptsname_r' function. */
+#undef HAVE_PTSNAME_R
+
 /* Define to 1 if you have the `putenv' function. */
 #undef HAVE_PUTENV
+
+/* Define to 1 if you have the `pwrite' function. */
+#undef HAVE_PWRITE
+
+/* Define to 1 if you have the `qsort_r' function. */
+#undef HAVE_QSORT_R
+
+/* Define to 1 if you have the `raise' function. */
+#undef HAVE_RAISE
+
+/* Define to 1 if you have the `random' function. */
+#undef HAVE_RANDOM
+
+/* Define to 1 if you have the `random_r' function. */
+#undef HAVE_RANDOM_R
 
 /* Define to 1 if you have the <ranlib.h> header file. */
 #undef HAVE_RANLIB_H
 
+/* Define to 1 if you have the `readlink' function. */
+#undef HAVE_READLINK
+
+/* Define to 1 if you have the `readlinkat' function. */
+#undef HAVE_READLINKAT
+
+/* Define to 1 if you have the `reallocarray' function. */
+#undef HAVE_REALLOCARRAY
+
 /* Define to 1 if you have the `realpath' function. */
 #undef HAVE_REALPATH
+
+/* Define to 1 if you have the `rpmatch' function. */
+#undef HAVE_RPMATCH
+
+/* Define to 1 if you have the `secure_getenv' function. */
+#undef HAVE_SECURE_GETENV
 
 /* Define to 1 if you have the `select' function. */
 #undef HAVE_SELECT
@@ -95,20 +290,65 @@
 /* Define to 1 if you have the `setenv' function. */
 #undef HAVE_SETENV
 
+/* Define to 1 if you have the `sethostname' function. */
+#undef HAVE_SETHOSTNAME
+
 /* Define to 1 if you have the `setpgid' function. */
 #undef HAVE_SETPGID
 
 /* Define to 1 if you have the `setsid' function. */
 #undef HAVE_SETSID
 
+/* Define to 1 if you have the `setstate' function. */
+#undef HAVE_SETSTATE
+
+/* Define to 1 if you have the `setstate_r' function. */
+#undef HAVE_SETSTATE_R
+
+/* Define to 1 if you have the `setusershell' function. */
+#undef HAVE_SETUSERSHELL
+
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
+
+/* Define to 1 if you have the `sigaddset' function. */
+#undef HAVE_SIGADDSET
+
+/* Define to 1 if you have the `sigdelset' function. */
+#undef HAVE_SIGDELSET
+
+/* Define to 1 if you have the `sigemptyset' function. */
+#undef HAVE_SIGEMPTYSET
+
+/* Define to 1 if you have the `sigfillset' function. */
+#undef HAVE_SIGFILLSET
+
+/* Define to 1 if you have the `sigismember' function. */
+#undef HAVE_SIGISMEMBER
+
+/* Define to 1 if you have the `signal' function. */
+#undef HAVE_SIGNAL
+
+/* Define to 1 if you have the `sigpending' function. */
+#undef HAVE_SIGPENDING
+
+/* Define to 1 if you have the `sigprocmask' function. */
+#undef HAVE_SIGPROCMASK
 
 /* Define to 1 if you have the `sigvec' function. */
 #undef HAVE_SIGVEC
 
+/* Define to 1 if you have the `sleep' function. */
+#undef HAVE_SLEEP
+
 /* Define to 1 if you have the `snprintf' function. */
 #undef HAVE_SNPRINTF
+
+/* Define to 1 if you have the `srandom' function. */
+#undef HAVE_SRANDOM
+
+/* Define to 1 if you have the `srandom_r' function. */
+#undef HAVE_SRANDOM_R
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -143,12 +383,24 @@
 /* Define to 1 if you have the `strtol' function. */
 #undef HAVE_STRTOL
 
+/* Define to 1 if you have the `strtoll' function. */
+#undef HAVE_STRTOLL
+
+/* Define to 1 if you have the `strtoull' function. */
+#undef HAVE_STRTOULL
+
 /* Define to 1 if `struct stat' is a member of `st_rdev'. */
 #undef HAVE_STRUCT_STAT_ST_RDEV
 
 /* Define to 1 if your `struct stat' has `st_rdev'. Deprecated, use
    `HAVE_STRUCT_STAT_ST_RDEV' instead. */
 #undef HAVE_ST_RDEV
+
+/* Define to 1 if you have the `symlink' function. */
+#undef HAVE_SYMLINK
+
+/* Define to 1 if you have the `symlinkat' function. */
+#undef HAVE_SYMLINKAT
 
 /* Define to 1 if you have the `sysctl' function. */
 #undef HAVE_SYSCTL
@@ -166,6 +418,9 @@
 
 /* Define to 1 if you have the <sys/param.h> header file. */
 #undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/resource.h> header file. */
+#undef HAVE_SYS_RESOURCE_H
 
 /* Define to 1 if you have the <sys/select.h> header file. */
 #undef HAVE_SYS_SELECT_H
@@ -188,17 +443,41 @@
 /* Define to 1 if you have the <sys/uio.h> header file. */
 #undef HAVE_SYS_UIO_H
 
+/* Define to 1 if you have the <sys/utsname.h> header file. */
+#undef HAVE_SYS_UTSNAME_H
+
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #undef HAVE_SYS_WAIT_H
+
+/* Define to 1 if you have the `truncate' function. */
+#undef HAVE_TRUNCATE
+
+/* Define to 1 if you have the `ttyname_r' function. */
+#undef HAVE_TTYNAME_R
+
+/* Define to 1 if you have the `uname' function. */
+#undef HAVE_UNAME
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the `unlinkat' function. */
+#undef HAVE_UNLINKAT
+
+/* Define to 1 if you have the `unlockpt' function. */
+#undef HAVE_UNLOCKPT
+
 /* Define to 1 if you have the `unsetenv' function. */
 #undef HAVE_UNSETENV
 
+/* Define to 1 if you have the `usleep' function. */
+#undef HAVE_USLEEP
+
 /* Define to 1 if you have the <utime.h> header file. */
 #undef HAVE_UTIME_H
+
+/* Define to 1 if you have the `utimensat' function. */
+#undef HAVE_UTIMENSAT
 
 /* Define to 1 if you have the `vfork' function. */
 #undef HAVE_VFORK
@@ -232,6 +511,9 @@
 
 /* Define to 1 if `vfork' works. */
 #undef HAVE_WORKING_VFORK
+
+/* Define to 1 if you have the `_Exit' function. */
+#undef HAVE__EXIT
 
 /* define if your compiler has __attribute__ */
 #undef HAVE___ATTRIBUTE__
@@ -342,3 +624,6 @@
 
 /* Define as `fork' if `vfork' does not work. */
 #undef vfork
+
+
+#undef HAVE_STRUCT_STAT_ST_RDEV

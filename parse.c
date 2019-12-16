@@ -125,6 +125,9 @@ __RCSID("$NetBSD: parse.c,v 1.231 2018/12/22 00:36:32 sjg Exp $");
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>

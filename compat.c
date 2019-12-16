@@ -100,11 +100,20 @@ __RCSID("$NetBSD: compat.c,v 1.107 2017/07/20 19:29:54 sjg Exp $");
 #endif
 #include    <sys/types.h>
 #include    <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #include    "wait.h"
 
 #include    <ctype.h>
 #include    <errno.h>
 #include    <signal.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/signal.h"
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT SIGTERM
+#endif
 #include    <stdio.h>
 
 #include    "make.h"
@@ -715,9 +724,11 @@ Compat_Run(Lst targs)
     if (bmake_signal(SIGTERM, SIG_IGN) != SIG_IGN) {
 	bmake_signal(SIGTERM, CompatInterrupt);
     }
+#if defined(SIGHUP)
     if (bmake_signal(SIGHUP, SIG_IGN) != SIG_IGN) {
 	bmake_signal(SIGHUP, CompatInterrupt);
     }
+#endif
     if (bmake_signal(SIGQUIT, SIG_IGN) != SIG_IGN) {
 	bmake_signal(SIGQUIT, CompatInterrupt);
     }

@@ -7,6 +7,12 @@
  */
 #if defined(__MINT__) || defined(__linux__)
 #include <signal.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/signal.h"
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT SIGTERM
+#endif
 #endif
 
 #include "make.h"
@@ -22,6 +28,58 @@ __RCSID("$NetBSD: util.c,v 1.54 2013/11/26 13:44:41 joerg Exp $");
 #include <errno.h>
 #include <time.h>
 #include <signal.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/signal.h"
+#endif
+#ifndef SIGQUIT
+#define SIGQUIT SIGTERM
+#endif
+
+#if !defined(HAVE_PIPE) && (defined _WIN32 && ! defined __CYGWIN__)
+/* Create a pipe.
+   Copyright (C) 2009-2018 Free Software Foundation, Inc.
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License along
+   with this program; if not, see <https://www.gnu.org/licenses/>.  */
+
+/* Specification.  */
+#include <unistd.h>
+#include "headers-mingw/unistd.h"
+/* Native Windows API.  */
+
+/* Get _pipe().  */
+#include <io.h>
+
+/* Get _O_BINARY.  */
+#include <fcntl.h>
+#include "headers-mingw/fcntl.h"
+
+int
+pipe (int fd[2])
+{
+  /* Mingw changes fd to {-1,-1} on failure, but this violates
+     http://austingroupbugs.net/view.php?id=467 */
+  int tmp[2];
+  int result = _pipe (tmp, 4096, _O_BINARY);
+  if (!result)
+    {
+      fd[0] = tmp[0];
+      fd[1] = tmp[1];
+    }
+  return result;
+}
+
+#endif
 
 #if !defined(HAVE_STRERROR)
 extern int errno, sys_nerr;
@@ -219,9 +277,15 @@ char    *sys_siglist[] = {
 #include <sys/syscall.h>
 #include <sys/signal.h>
 #include <sys/stat.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/sys_stat.h"
+#endif
 #include <dirent.h>
 #include <sys/time.h>
 #include <unistd.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/unistd.h"
+#endif
 
 int
 killpg(int pid, int sig)

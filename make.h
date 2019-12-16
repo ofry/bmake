@@ -89,14 +89,23 @@
 
 #include <ctype.h>
 #include <fcntl.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/fcntl.h"
+#endif
 #include <stdio.h>
 #include <stdlib.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/stdlib.h"
+#endif
 #ifdef HAVE_STRING_H
 #include <string.h>
 #else
 #include <strings.h>
 #endif
 #include <unistd.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/unistd.h"
+#endif
 #include <sys/cdefs.h>
 
 #ifndef FD_CLOEXEC
