@@ -5,5 +5,5 @@ and now: sad
 
 Stop.
 make: stopped in unit-tests
-.ERROR: Looks like 'sad' is upset.
+.__ERROR: Looks like 'sad' is upset.
 exit status 1

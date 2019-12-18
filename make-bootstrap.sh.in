@@ -22,6 +22,12 @@ MDEFS="-DMAKE_VERSION=\"$MAKE_VERSION\" \
 
 LDFLAGS="@LDFLAGS@"
 LIBS="@LIBS@"
+MACHINE="@machine@"
+
+if [ "$(expr substr ${MACHINE} 1 5)" == "mingw" ]; then
+    LIBS+=" -lws2_32 -lwsock32"
+    CFLAGS+=" -DNO_REGEX"
+fi
 
 do_compile2() {
 	obj="$1"; shift

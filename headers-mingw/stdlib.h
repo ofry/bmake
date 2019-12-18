@@ -40,7 +40,7 @@
 /* Define 'struct random_data'.
    But allow multiple gnulib generated <stdlib.h> replacements to coexist.  */
 #if !GNULIB_defined_struct_random_data
-typedef struct
+typedef struct random_data
 {
   int *fptr;                /* Front pointer.  */
   int *rptr;                /* Rear pointer.  */
@@ -49,7 +49,7 @@ typedef struct
   int rand_deg;                 /* Degree of random number generator.  */
   int rand_sep;                 /* Distance between front and rear.  */
   int *end_ptr;             /* Pointer behind state table.  */
-} random_data;
+};
 # define GNULIB_defined_struct_random_data 1
 #endif
 
@@ -257,20 +257,20 @@ extern char * setstate(char *arg_state);
 
 
 #if !HAVE_RANDOM_R
-extern int random_r(random_data *buf, int *result);
+extern int random_r(struct random_data *buf, int *result);
 #endif
 
 #  if !HAVE_SRANDOM_R
-extern int srandom_r(unsigned int seed, random_data *rand_state);
+extern int srandom_r(unsigned int seed, struct random_data *rand_state);
 #endif
 
 #if !HAVE_INITSTATE_R
 extern int initstate_r(unsigned int seed, char *buf, size_t buf_size,
-    random_data *rand_state);
+    struct random_data *rand_state);
 #endif
 
 #if !HAVE_SETSTATE_R
-extern int setstate_r(char *arg_state, random_data *rand_state);
+extern int setstate_r(char *arg_state, struct random_data *rand_state);
 #endif
 
 #if !HAVE_REALLOCARRAY

@@ -314,7 +314,7 @@ _reldir_failed: .NOMETA
 
 .if defined(WITH_META_STATS) && ${.MAKE.LEVEL} > 0
 .END: _reldir_finish
-.ERROR: _reldir_failed
+.__ERROR: _reldir_failed
 .endif
 
 .endif

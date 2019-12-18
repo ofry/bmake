@@ -194,8 +194,8 @@ dir_list != cd ${_OBJDIR} && \
 	${_meta_files_arg} | ${META2DEPS_FILTER} ${_skip_gendirdeps} \
 	sed ${GENDIRDEPS_SEDCMDS}
 
-.if ${dir_list:M*ERROR\:*} != ""
-.warning ${dir_list:tW:C,.*(ERROR),\1,}
+.if ${dir_list:M*__ERROR\:*} != ""
+.warning ${dir_list:tW:C,.*(__ERROR),\1,}
 .warning Skipping ${_DEPENDFILE:S,${SRCTOP}/,,}
 # we are not going to update anything
 .else

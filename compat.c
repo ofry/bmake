@@ -123,7 +123,6 @@ __RCSID("$NetBSD: compat.c,v 1.107 2017/07/20 19:29:54 sjg Exp $");
 #include    "metachar.h"
 #include    "pathnames.h"
 
-
 static GNode	    *curTarg = NULL;
 static GNode	    *ENDNode;
 static void CompatInterrupt(int);
@@ -199,7 +198,7 @@ CompatInterrupt(int signo)
 	kill(myPid, signo);
     }
 }
-
+
 /*-
  *-----------------------------------------------------------------------
  * CompatRunCommand --
@@ -474,7 +473,7 @@ again:
 			meta_job_error(NULL, gn, 0, status);
 		    }
 #endif
-		    gn->made = ERROR;
+		    gn->made = __ERROR;
 		    if (keepgoing) {
 			/*
 			 * Abort the current target, but let others
@@ -511,7 +510,7 @@ again:
     
     return (status);
 }
-
+
 /*-
  *-----------------------------------------------------------------------
  * Compat_Make --
@@ -537,7 +536,7 @@ Compat_Make(void *gnp, void *pgnp)
 
     if (!shellName)		/* we came here from jobs */
 	Shell_Init();
-    if (gn->made == UNMADE && (gn == pgn || (pgn->type & OP_MADE) == 0)) {
+    if (gn->made == __UNMADE && (gn == pgn || (pgn->type & OP_MADE) == 0)) {
 	/*
 	 * First mark ourselves to be made, then apply whatever transformations
 	 * the suffix module thinks are necessary. Once that's done, we can
@@ -547,12 +546,12 @@ Compat_Make(void *gnp, void *pgnp)
 	 * parent as well.
 	 */
 	gn->flags |= REMAKE;
-	gn->made = BEINGMADE;
+	gn->made = __BEINGMADE;
 	if ((gn->type & OP_MADE) == 0)
 	    Suff_FindDeps(gn);
 	Lst_ForEach(gn->children, Compat_Make, gn);
 	if ((gn->flags & REMAKE) == 0) {
-	    gn->made = ABORTED;
+	    gn->made = __ABORTED;
 	    pgn->flags &= ~REMAKE;
 	    goto cohorts;
 	}
@@ -573,7 +572,7 @@ Compat_Make(void *gnp, void *pgnp)
 	    fprintf(debug_file, "Examining %s...", gn->name);
 	}
 	if (! Make_OODate(gn)) {
-	    gn->made = UPTODATE;
+	    gn->made = __UPTODATE;
 	    if (DEBUG(MAKE)) {
 		fprintf(debug_file, "up-to-date.\n");
 	    }
@@ -626,23 +625,23 @@ Compat_Make(void *gnp, void *pgnp)
 		Job_Touch(gn, gn->type & OP_SILENT);
 	    }
 	} else {
-	    gn->made = ERROR;
+	    gn->made = __ERROR;
 	}
 #ifdef USE_META
 	if (useMeta && !NoExecute(gn)) {
 	    if (meta_job_finish(NULL) != 0)
-		gn->made = ERROR;
+		gn->made = __ERROR;
 	}
 #endif
 
-	if (gn->made != ERROR) {
+	if (gn->made != __ERROR) {
 	    /*
 	     * If the node was made successfully, mark it so, update
 	     * its modification time and timestamp all its parents. Note
 	     * that for .ZEROTIME targets, the timestamping isn't done.
 	     * This is to keep its state from affecting that of its parent.
 	     */
-	    gn->made = MADE;
+	    gn->made = __MADE;
 	    pgn->flags |= Make_Recheck(gn) == 0 ? FORCE : 0;
 	    if (!(gn->type & OP_EXEC)) {
 		pgn->flags |= CHILDMADE;
@@ -654,7 +653,7 @@ Compat_Make(void *gnp, void *pgnp)
 	    PrintOnError(gn, "\nStop.");
 	    exit(1);
 	}
-    } else if (gn->made == ERROR) {
+    } else if (gn->made == __ERROR) {
 	/*
 	 * Already had an error when making this beastie. Tell the parent
 	 * to abort.
@@ -667,18 +666,18 @@ Compat_Make(void *gnp, void *pgnp)
 	    free(p1);
 	}
 	switch(gn->made) {
-	    case BEINGMADE:
+	    case __BEINGMADE:
 		Error("Graph cycles through %s", gn->name);
-		gn->made = ERROR;
+		gn->made = __ERROR;
 		pgn->flags &= ~REMAKE;
 		break;
-	    case MADE:
+	    case __MADE:
 		if ((gn->type & OP_EXEC) == 0) {
 		    pgn->flags |= CHILDMADE;
 		    Make_TimeStamp(pgn, gn);
 		}
 		break;
-	    case UPTODATE:
+	    case __UPTODATE:
 		if ((gn->type & OP_EXEC) == 0) {
 		    Make_TimeStamp(pgn, gn);
 		}
@@ -692,7 +691,7 @@ cohorts:
     Lst_ForEach(gn->cohorts, Compat_Make, pgnp);
     return (0);
 }
-
+
 /*-
  *-----------------------------------------------------------------------
  * Compat_Run --
@@ -743,7 +742,7 @@ Compat_Run(Lst targs)
 	gn = Targ_FindNode(".BEGIN", TARG_NOCREATE);
 	if (gn != NULL) {
 	    Compat_Make(gn, gn);
-            if (gn->made == ERROR) {
+            if (gn->made == __ERROR) {
                 PrintOnError(gn, "\nStop.");
                 exit(1);
             }
@@ -771,9 +770,9 @@ Compat_Run(Lst targs)
 	gn = (GNode *)Lst_DeQueue(targs);
 	Compat_Make(gn, gn);
 
-	if (gn->made == UPTODATE) {
+	if (gn->made == __UPTODATE) {
 	    printf("`%s' is up to date.\n", gn->name);
-	} else if (gn->made == ABORTED) {
+	} else if (gn->made == __ABORTED) {
 	    printf("`%s' not remade because of errors.\n", gn->name);
 	    errors += 1;
 	}
@@ -784,7 +783,7 @@ Compat_Run(Lst targs)
      */
     if (errors == 0) {
 	Compat_Make(ENDNode, ENDNode);
-	if (gn->made == ERROR) {
+	if (gn->made == __ERROR) {
 	    PrintOnError(gn, "\nStop.");
 	    exit(1);
 	}

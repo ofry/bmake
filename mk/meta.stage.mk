@@ -65,7 +65,7 @@ LN_CP_SCRIPT = LnCp() { \
 
 # a staging conflict should cause an error
 # a warning is handy when bootstapping different options.
-STAGE_CONFLICT?= ERROR
+STAGE_CONFLICT?= __ERROR
 .if ${STAGE_CONFLICT:tl} == "error"
 STAGE_CONFLICT_ACTION= exit 1;
 .else

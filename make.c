@@ -701,7 +701,7 @@ Make_Update(GNode *cgn)
      * now -- some rules won't actually update the file. If the file still
      * doesn't exist, make its mtime now.
      */
-    if (cgn->made != UPTODATE) {
+    if (cgn->made != __UPTODATE) {
 	mtime = Make_Recheck(cgn);
     }
 
@@ -757,7 +757,7 @@ Make_Update(GNode *cgn)
 	    }
 
 	    if ( ! (cgn->type & (OP_EXEC|OP_USE|OP_USEBEFORE))) {
-		if (cgn->made == MADE)
+		if (cgn->made == __MADE)
 		    pgn->flags |= CHILDMADE;
 		(void)Make_TimeStamp(pgn, cgn);
 	    }
@@ -766,7 +766,7 @@ Make_Update(GNode *cgn)
 	     * A parent must wait for the completion of all instances
 	     * of a `::' dependency.
 	     */
-	    if (centurion->unmade_cohorts != 0 || centurion->made < MADE) {
+	    if (centurion->unmade_cohorts != 0 || centurion->made < __MADE) {
 		if (DEBUG(MAKE))
 		    fprintf(debug_file,
 			    "- centurion made %d, %d unmade cohorts\n",
@@ -792,7 +792,7 @@ Make_Update(GNode *cgn)
 		    fprintf(debug_file, "- unmade children\n");
 		continue;
 	    }
-	    if (pgn->made != DEFERRED) {
+	    if (pgn->made != __DEFERRED) {
 		/*
 		 * Either this parent is on a different branch of the tree,
 		 * or it on the RHS of a .WAIT directive
@@ -815,7 +815,7 @@ Make_Update(GNode *cgn)
 		Targ_PrintNode(pgn, &two);
 	    }
 	    /* Ok, we can schedule the parent again */
-	    pgn->made = REQUESTED;
+	    pgn->made = __REQUESTED;
 	    (void)Lst_EnQueue(toBeMade, pgn);
 	}
 	Lst_Close(parents);
@@ -906,11 +906,11 @@ MakeAddAllSrc(void *cgnp, void *pgnp)
 		Var_Append(ALLSRC, allsrc, pgn);
 	free(p2);
 	if (pgn->type & OP_JOIN) {
-	    if (cgn->made == MADE) {
+	    if (cgn->made == __MADE) {
 		Var_Append(OODATE, child, pgn);
 	    }
 	} else if ((pgn->mtime < cgn->mtime) ||
-		   (cgn->mtime >= now && cgn->made == MADE))
+		   (cgn->mtime >= now && cgn->made == __MADE))
 	{
 	    /*
 	     * It goes in the OODATE variable if the parent is younger than the
@@ -1003,7 +1003,7 @@ MakeCheckOrder(void *v_bn, void *ignore MAKE_ATTR_UNUSED)
 {
     GNode *bn = v_bn;
 
-    if (bn->made >= MADE || !(bn->flags & REMAKE))
+    if (bn->made >= __MADE || !(bn->flags & REMAKE))
 	return 0;
     if (DEBUG(MAKE))
 	fprintf(debug_file, "MakeCheckOrder: Waiting for .ORDER node %s%s\n",
@@ -1019,13 +1019,13 @@ MakeBuildChild(void *v_cn, void *toBeMade_next)
     if (DEBUG(MAKE))
 	fprintf(debug_file, "MakeBuildChild: inspect %s%s, made %d, type %x\n",
 	    cn->name, cn->cohort_num, cn->made, cn->type);
-    if (cn->made > DEFERRED)
+    if (cn->made > __DEFERRED)
 	return 0;
 
     /* If this node is on the RHS of a .ORDER, check LHSs. */
     if (cn->order_pred && Lst_ForEach(cn->order_pred, MakeCheckOrder, 0)) {
 	/* Can't build this (or anything else in this child list) yet */
-	cn->made = DEFERRED;
+	cn->made = __DEFERRED;
 	return 0;			/* but keep looking */
     }
 
@@ -1033,7 +1033,7 @@ MakeBuildChild(void *v_cn, void *toBeMade_next)
 	fprintf(debug_file, "MakeBuildChild: schedule %s%s\n",
 		cn->name, cn->cohort_num);
 
-    cn->made = REQUESTED;
+    cn->made = __REQUESTED;
     if (toBeMade_next == NULL)
 	Lst_AtEnd(toBeMade, cn);
     else
@@ -1055,7 +1055,7 @@ MakeBuildParent(void *v_pn, void *toBeMade_next)
 {
     GNode *pn = v_pn;
 
-    if (pn->made != DEFERRED)
+    if (pn->made != __DEFERRED)
 	return 0;
 
     if (MakeBuildChild(pn, toBeMade_next) == 0) {
@@ -1083,7 +1083,7 @@ MakeStartJobs(void)
 	    fprintf(debug_file, "Examining %s%s...\n",
 		    gn->name, gn->cohort_num);
 
-	if (gn->made != REQUESTED) {
+	if (gn->made != __REQUESTED) {
 	    if (DEBUG(MAKE))
 		fprintf(debug_file, "state %d\n", gn->made);
 
@@ -1095,7 +1095,7 @@ MakeStartJobs(void)
 	    if (DEBUG(MAKE))
 		fprintf(debug_file, "already checked %s%s\n",
 			gn->name, gn->cohort_num);
-	    gn->made = DEFERRED;
+	    gn->made = __DEFERRED;
 	    continue;
 	}
 	gn->checked = checked;
@@ -1105,7 +1105,7 @@ MakeStartJobs(void)
 	     * We can't build this yet, add all unmade children to toBeMade,
 	     * just before the current first element.
 	     */
-	    gn->made = DEFERRED;
+	    gn->made = __DEFERRED;
 	    Lst_ForEach(gn->children, MakeBuildChild, Lst_First(toBeMade));
 	    /* and drop this node on the floor */
 	    if (DEBUG(MAKE))
@@ -1113,7 +1113,7 @@ MakeStartJobs(void)
 	    continue;
 	}
 
-	gn->made = BEINGMADE;
+	gn->made = __BEINGMADE;
 	if (Make_OODate(gn)) {
 	    if (DEBUG(MAKE)) {
 		fprintf(debug_file, "out-of-date\n");
@@ -1128,7 +1128,7 @@ MakeStartJobs(void)
 	    if (DEBUG(MAKE)) {
 		fprintf(debug_file, "up-to-date\n");
 	    }
-	    gn->made = UPTODATE;
+	    gn->made = __UPTODATE;
 	    if (gn->type & OP_JOIN) {
 		/*
 		 * Even for an up-to-date .JOIN node, we need it to have its
@@ -1175,7 +1175,7 @@ MakePrintStatusOrder(void *ognp, void *gnp)
     GNode *ogn = ognp;
     GNode *gn = gnp;
 
-    if (!(ogn->flags & REMAKE) || ogn->made > REQUESTED)
+    if (!(ogn->flags & REMAKE) || ogn->made > __REQUESTED)
 	/* not waiting for this one */
 	return 0;
 
@@ -1204,15 +1204,15 @@ MakePrintStatus(void *gnp, void *v_errors)
     if (gn->unmade == 0) {
 	gn->flags |= DONECYCLE;
 	switch (gn->made) {
-	case UPTODATE:
+	case __UPTODATE:
 	    printf("`%s%s' is up to date.\n", gn->name, gn->cohort_num);
 	    break;
-	case MADE:
+	case __MADE:
 	    break;
-	case UNMADE:
-	case DEFERRED:
-	case REQUESTED:
-	case BEINGMADE:
+	case __UNMADE:
+	case __DEFERRED:
+	case __REQUESTED:
+	case __BEINGMADE:
 	    (*errors)++;
 	    printf("`%s%s' was not built (made %d, flags %x, type %x)!\n",
 		    gn->name, gn->cohort_num, gn->made, gn->flags, gn->type);

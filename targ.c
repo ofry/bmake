@@ -246,7 +246,7 @@ Targ_NewGN(const char *name)
     gn->unmade_cohorts = 0;
     gn->cohort_num[0] = 0;
     gn->centurion =    	NULL;
-    gn->made = 	    	UNMADE;
+    gn->made = 	    	__UNMADE;
     gn->flags = 	0;
     gn->checked =	0;
     gn->mtime =		0;
@@ -603,14 +603,14 @@ static const char *
 made_name(enum enum_made made)
 {
     switch (made) {
-    case UNMADE:     return "unmade";
-    case DEFERRED:   return "deferred";
-    case REQUESTED:  return "requested";
-    case BEINGMADE:  return "being made";
-    case MADE:       return "made";
-    case UPTODATE:   return "up-to-date";
-    case ERROR:      return "error when made";
-    case ABORTED:    return "aborted";
+    case __UNMADE:     return "unmade";
+    case __DEFERRED:   return "deferred";
+    case __REQUESTED:  return "requested";
+    case __BEINGMADE:  return "being made";
+    case __MADE:       return "made";
+    case __UPTODATE:   return "up-to-date";
+    case __ERROR:      return "error when made";
+    case __ABORTED:    return "aborted";
     default:         return "unknown enum_made value";
     }
 }
@@ -648,7 +648,7 @@ Targ_PrintNode(void *gnp, void *passp)
 		    fprintf(debug_file, "# last modified %s: %s\n",
 			      Targ_FmtTime(gn->mtime),
 			      made_name(gn->made));
-		} else if (gn->made != UNMADE) {
+		} else if (gn->made != __UNMADE) {
 		    fprintf(debug_file, "# non-existent (maybe): %s\n",
 			      made_name(gn->made));
 		} else {

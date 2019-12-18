@@ -18,7 +18,7 @@
 # for maximum benefit, requires filemon(4) driver.
 
 .if ${MAKE_VERSION:U0} > 20100901
-.if !target(.ERROR)
+.if !target(.__ERROR)
 
 .-include <local.meta.sys.mk>
 
@@ -92,13 +92,13 @@ ERROR_LOGDIR ?= ${SB}/error
 meta_error_log = ${ERROR_LOGDIR}/meta-${.MAKE.PID}.log
 
 # we are not interested in make telling us a failure happened elsewhere
-.ERROR: _metaError
+.__ERROR: _metaError
 _metaError: .NOMETA .NOTMAIN
 	-@[ "${.ERROR_META_FILE}" ] && { \
 	grep -q 'failure has been detected in another branch' ${.ERROR_META_FILE} && exit 0; \
 	mkdir -p ${meta_error_log:H}; \
 	cp ${.ERROR_META_FILE} ${meta_error_log}; \
-	echo "ERROR: log ${meta_error_log}" >&2; }; :
+	echo "__ERROR: log ${meta_error_log}" >&2; }; :
 
 .endif
 
@@ -137,7 +137,7 @@ META_NOECHO= :
 UPDATE_DEPENDFILE= NO
 .export UPDATE_DEPENDFILE
 .elif !exists(/dev/filemon)
-.error ${.newline}ERROR: The filemon module (/dev/filemon) is not loaded.
+.error ${.newline}__ERROR: The filemon module (/dev/filemon) is not loaded.
 .endif
 .endif
 

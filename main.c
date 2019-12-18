@@ -132,7 +132,7 @@ __RCSID("$NetBSD: main.c,v 1.273 2017/10/28 21:54:54 sjg Exp $");
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #else
-#include "headers-mingw/utsname.h"
+#include "headers-mingw/sys_utsname.h"
 #endif
 #include "wait.h"
 
@@ -1206,8 +1206,10 @@ main(int argc, char **argv)
 	    Var_Set(MAKE_LEVEL, tmp, VAR_GLOBAL, 0);
 	    snprintf(tmp, sizeof(tmp), "%u", myPid);
 	    Var_Set(".MAKE.PID", tmp, VAR_GLOBAL, 0);
+#ifdef HAVE_GETPPID
 	    snprintf(tmp, sizeof(tmp), "%u", getppid());
 	    Var_Set(".MAKE.PPID", tmp, VAR_GLOBAL, 0);
+#endif
 	}
 	if (makelevel > 0) {
 		char pn[1024];
@@ -1626,8 +1628,6 @@ found:
 	return(0);
 }
 
-
-
 /*-
  * Cmd_Exec --
  *	Execute the command in cmd, and return the output of that command
@@ -1772,7 +1772,6 @@ bad:
     *res = '\0';
     return res;
 }
-#endif
 
 /*-
  * Error --

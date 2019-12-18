@@ -944,8 +944,8 @@
 	  o dirdeps.mk set DEP_MACHINE for Makefile.depend (when we are
 	    normally using Makefile.depend.${MACHINE}), handy for
 	    read-only manually maintained dependencies.
-	  o meta2deps.py add a clear 'ERROR:' token if an exception is raised.
-	  o gendirdeps.mk if ERROR: from meta2deps.py do not update
+	  o meta2deps.py add a clear '__ERROR:' token if an exception is raised.
+	  o gendirdeps.mk if __ERROR: from meta2deps.py do not update
 	    anything.
 	
 2011-10-30  Simon J. Gerraty  <sjg@bad.crufty.net>

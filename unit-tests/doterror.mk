@@ -7,7 +7,7 @@
 .END:
 	@echo not reached
 
-.ERROR:
+.__ERROR:
 	@echo "$@: Looks like '${.ERROR_TARGET}' is upset."
 
 all:	happy sad

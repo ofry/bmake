@@ -357,9 +357,9 @@ else
 fi # as_fn_arith
 
 
-# as_fn_error ERROR [LINENO LOG_FD]
+# as_fn_error __ERROR [LINENO LOG_FD]
 # ---------------------------------
-# Output "`basename $0`: error: ERROR" to stderr. If LINENO and LOG_FD are
+# Output "`basename $0`: error: __ERROR" to stderr. If LINENO and LOG_FD are
 # provided, also output the error to LOG_FD, referencing LINENO. Then exit the
 # script with status $?, using 1 if that was 0.
 as_fn_error ()
@@ -5636,6 +5636,7 @@ for ac_func in \
 	getlogin_r \
 	getopt \
 	getpass \
+	getppid \
 	getrusage \
 	getsubopt \
 	getusershell \
@@ -5644,6 +5645,7 @@ for ac_func in \
 	group_member \
 	initstate \
 	initstate_r \
+	kill \
 	killpg \
 	lchmod \
 	lchown \
@@ -5686,6 +5688,7 @@ for ac_func in \
 	setenv \
 	sethostname \
 	setpgid \
+	setpgrp \
 	setsid \
 	setstate \
 	setstate_r \
@@ -5723,6 +5726,7 @@ for ac_func in \
 	usleep \
 	utimensat \
 	vsnprintf \
+	wait \
 	wait3 \
 	wait4 \
 	waitpid \
@@ -6419,9 +6423,9 @@ export LANGUAGE
 (unset CDPATH) >/dev/null 2>&1 && unset CDPATH
 
 
-# as_fn_error ERROR [LINENO LOG_FD]
+# as_fn_error __ERROR [LINENO LOG_FD]
 # ---------------------------------
-# Output "`basename $0`: error: ERROR" to stderr. If LINENO and LOG_FD are
+# Output "`basename $0`: error: __ERROR" to stderr. If LINENO and LOG_FD are
 # provided, also output the error to LOG_FD, referencing LINENO. Then exit the
 # script with status $?, using 1 if that was 0.
 as_fn_error ()

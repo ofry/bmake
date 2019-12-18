@@ -210,8 +210,8 @@ typedef struct GNode {
 #define DONECYCLE	0x2000  /* Used by MakePrintStatus */
 #define INTERNAL	0x4000	/* Internal use only */
     enum enum_made {
-	UNMADE, DEFERRED, REQUESTED, BEINGMADE,
-	MADE, UPTODATE, ERROR, ABORTED
+	__UNMADE, __DEFERRED, __REQUESTED, __BEINGMADE,
+        __MADE, __UPTODATE, __ERROR, __ABORTED
     }	    	    made;    	/* Set to reflect the state of processing
 				 * on this node:
 				 *  UNMADE - Not examined yet

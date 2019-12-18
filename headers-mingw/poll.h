@@ -43,13 +43,17 @@
 # define POLLWRBAND  0x0200
 
 # if !GNULIB_defined_poll_types
-
+#  if !(defined _WIN32 && ! defined __CYGWIN__)
 struct pollfd
 {
   int fd;                       /* which file descriptor to poll */
   short events;                 /* events we are interested in   */
   short revents;                /* events found on return        */
 };
+
+#  else
+#include <winsock2.h>
+#  endif
 
 typedef unsigned long nfds_t;
 

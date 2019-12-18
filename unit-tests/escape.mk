@@ -51,7 +51,7 @@ A = ${a}
 should continue the comment. \
 # This is also tested in comment.mk.
 
-__printvars: .USE .MADE
+__printvars: .USE .__MADE
 	@echo ${.TARGET}
 	${.ALLSRC:@v@ printf "%s=:%s:\n" ${v:Q} ${${v}:Q}; @}
 

@@ -257,4 +257,8 @@ extern int sigaction(int, const struct sigaction *restrict,
 # define SIGSTOP (-1)
 #endif
 
+#if !defined(HAVE_KILL)
+extern int kill(pid_t pid, int sig);
+#endif
+
 #endif /* _@GUARD_PREFIX@_SIGNAL_H */

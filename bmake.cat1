@@ -1216,7 +1216,7 @@ BMAKE(1)                FreeBSD General Commands Manual               BMAKE(1)
      [1m.IGNORE   [22mIgnore any errors from the commands associated with this tar-
                get, exactly as if they all were preceded by a dash (`-').
 
-     [1m.MADE     [22mMark all sources of this target as being up-to-date.
+     [1m.__MADE     [22mMark all sources of this target as being up-to-date.
 
      [1m.MAKE     [22mExecute the commands associated with this target even if the [1m-n[0m
                or [1m-t [22moptions were specified.  Normally used to mark recursive
@@ -1331,7 +1331,7 @@ BMAKE(1)                FreeBSD General Commands Manual               BMAKE(1)
      [1m.END     [22mAny command lines attached to this target are executed after
               everything else is done.
 
-     [1m.ERROR   [22mAny command lines attached to this target are executed when
+     [1m.__ERROR   [22mAny command lines attached to this target are executed when
               another target fails.  The [1m.ERROR_TARGET [22mvariable is set to the
               target that failed.  See also [1mMAKE_PRINT_VAR_ON_ERROR[22m.
 

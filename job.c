@@ -1128,7 +1128,7 @@ JobFinish (Job *job, WAIT_T status)
 			     JobSaveCommand,
 			    job->node);
 	}
-	job->node->made = MADE;
+	job->node->made = __MADE;
 	if (!(job->flags & JOB_SPECIAL))
 	    return_job_token = TRUE;
 	Make_Update(job->node);
@@ -1457,13 +1457,11 @@ JobExec(Job *job, char **argv)
 	 */
 #if defined(HAVE_SETPGID)
 	(void)setpgid(0, getpid());
-#else
-#if defined(HAVE_SETSID)
+#elif defined(HAVE_SETSID)
 	/* XXX: dsl - I'm sure this should be setpgrp()... */
 	(void)setsid();
-#else
+#elif defined(HAVE_SETPGRP)
 	(void)setpgrp(0, getpid());
-#endif
 #endif
 
 	Var_ExportVars();
@@ -1754,7 +1752,7 @@ JobStart(GNode *gn, int flags)
 				JobSaveCommand,
 			       job->node);
 	    }
-	    job->node->made = MADE;
+	    job->node->made = __MADE;
 	    Make_Update(job->node);
 	}
 	job->job_state = JOB_ST_FREE;
@@ -2003,7 +2001,7 @@ JobRun(GNode *targ)
     }
 #else
     Compat_Make(targ, targ);
-    if (targ->made == ERROR) {
+    if (targ->made == __ERROR) {
 	PrintOnError(targ, "\n\nStop.");
 	exit(1);
     }
@@ -3076,7 +3074,7 @@ Job_RunTarget(const char *target, const char *fname) {
 	Var_Set(ALLSRC, fname, gn, 0);
 
     JobRun(gn);
-    if (gn->made == ERROR) {
+    if (gn->made == __ERROR) {
 	PrintOnError(gn, "\n\nStop.");
 	exit(1);
     }

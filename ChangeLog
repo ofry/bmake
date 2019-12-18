@@ -445,7 +445,7 @@
 
 	* var.c: eliminate uint32_t and need for inttypes.h
 	
-	* main.c: PrintOnError flush stdout before run .ERROR
+	* main.c: PrintOnError flush stdout before run .__ERROR
 
 	* parse.c: cope with _SC_PAGESIZE not being defined.
 
@@ -1093,7 +1093,7 @@
 	  o NetBSD tags for meta.[ch]
 	  o job.c call meta_job_finish() after meta_job_error().
 	  o meta_job_error() should call meta_job_finish() to ensure
-	    .meta file is closed, and safe to copy - if .ERROR target wants.
+	    .meta file is closed, and safe to copy - if .__ERROR target wants.
 	   meta_job_finish() is safe to call repeatedly.
 	
 2011-03-29  Simon J. Gerraty  <sjg@bad.crufty.net>
@@ -1285,7 +1285,7 @@
 	  Merge with NetBSD make, pick up
 	  o revert use of realpath on argv[0]
 	    too many corner cases.
-	  o print MAKE_PRINT_VAR_ON_ERROR before running .ERROR target.
+	  o print MAKE_PRINT_VAR_ON_ERROR before running .__ERROR target.
 
 2010-05-05  Simon J. Gerraty  <sjg@bad.crufty.net>
 
@@ -1348,8 +1348,8 @@
 
 	* Makefile.in (MAKE_VERSION): bump version to 20100408
 	* Merge with NetBSD make, pick up
-	  o unit tests for .ERROR, .error
-	  o fix for .ERROR to ensure it cannot be default target.
+	  o unit tests for .__ERROR, .error
+	  o fix for .__ERROR to ensure it cannot be default target.
 
 2010-04-06  Simon J. Gerraty  <sjg@bad.crufty.net>
 
@@ -1362,7 +1362,7 @@
 	  o .MAKE.MAKEFILE_PREFERENCE to control the preferred makefile
 	    name(s).
 	  o .MAKE.DEPENDFILE to control the name of the depend file
-	  o .ERROR target - run on failure.
+	  o .__ERROR target - run on failure.
 	
 2010-03-18  Simon J. Gerraty  <sjg@bad.crufty.net>
 

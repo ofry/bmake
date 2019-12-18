@@ -24,11 +24,11 @@ CFLAGS+=	-mcmodel=medlow
 .if ${OBJECT_FMT} == "ELF"
 .ifndef LIBCRTBEGIN
 LIBCRTBEGIN=	${DESTDIR}/usr/lib/crtbegin.o
-.MADE: ${LIBCRTBEGIN}
+.__MADE: ${LIBCRTBEGIN}
 .endif
 .ifndef LIBCRTEND
 LIBCRTEND=	${DESTDIR}/usr/lib/crtend.o
-.MADE: ${LIBCRTEND}
+.__MADE: ${LIBCRTEND}
 .endif
 _SHLINKER=	${SHLINKDIR}/ld.elf_so
 .else
@@ -39,7 +39,7 @@ _SHLINKER=	${SHLINKDIR}/ld.so
 
 .ifndef LIBCRT0
 LIBCRT0=	${DESTDIR}/usr/lib/crt0.o
-.MADE: ${LIBCRT0}
+.__MADE: ${LIBCRT0}
 .endif
 .endif	# NetBSD
 

@@ -113,7 +113,7 @@ Do() {
 }
 
 Error() {
-	echo "ERROR: $@" >&2
+	echo "__ERROR: $@" >&2
 	exit 1
 }
 

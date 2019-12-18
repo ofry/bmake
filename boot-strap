@@ -134,14 +134,14 @@ case "$Mydir" in
 esac
 
 Usage() {
-	[ "$1" ] && echo "ERROR: $@" >&2
+	[ "$1" ] && echo "__ERROR: $@" >&2
 	echo "Usage:" >&2
 	echo "$0 [--<configure_arg> ...][<prefix>][--install]" >&2
 	exit 1
 }
 
 Error() {
-	echo "ERROR: $@" >&2
+	echo "__ERROR: $@" >&2
 	exit 1
 }
 

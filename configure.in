@@ -202,6 +202,7 @@ AC_CHECK_FUNCS( \
 	getlogin_r \
 	getopt \
 	getpass \
+	getppid \
 	getrusage \
 	getsubopt \
 	getusershell \
@@ -210,6 +211,7 @@ AC_CHECK_FUNCS( \
 	group_member \
 	initstate \
 	initstate_r \
+	kill \
 	killpg \
 	lchmod \
 	lchown \
@@ -252,6 +254,7 @@ AC_CHECK_FUNCS( \
 	setenv \
 	sethostname \
 	setpgid \
+	setpgrp \
 	setsid \
 	setstate \
     setstate_r \
@@ -289,6 +292,7 @@ AC_CHECK_FUNCS( \
 	usleep \
 	utimensat \
 	vsnprintf \
+	wait \
 	wait3 \
 	wait4 \
 	waitpid \

@@ -98,6 +98,9 @@
 /* Define to 1 if you have the `getcwd' function. */
 #undef HAVE_GETDOMAINNAME
 
+/* Define to 1 if you have the `getdtablesize' function. */
+#undef HAVE_GETDTABLESIZE
+
 /* Define to 1 if you have the `getenv' function. */
 #undef HAVE_GETENV
 
@@ -121,6 +124,9 @@
 
 /* Define to 1 if you have the `getpass' function. */
 #undef HAVE_GETPASS
+
+/* Define to 1 if you have the `getppid' function. */
+#undef HAVE_GETPPID
 
 /* Define to 1 if you have the `getrusage' function. */
 #undef HAVE_GETRUSAGE
@@ -148,6 +154,9 @@
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `kill' function. */
+#undef HAVE_KILL
 
 /* Define to 1 if you have the `killpg' function. */
 #undef HAVE_KILLPG
@@ -295,6 +304,9 @@
 
 /* Define to 1 if you have the `setpgid' function. */
 #undef HAVE_SETPGID
+
+/* Define to 1 if you have the `setpgrp' function. */
+#undef HAVE_SETPGRP
 
 /* Define to 1 if you have the `setsid' function. */
 #undef HAVE_SETSID
@@ -490,6 +502,9 @@
 
 /* Define to 1 if you have the `vsnprintf' function. */
 #undef HAVE_VSNPRINTF
+
+/* Define to 1 if you have the `wait' function. */
+#undef HAVE_WAIT
 
 /* Define to 1 if you have the `wait3' function. */
 #undef HAVE_WAIT3

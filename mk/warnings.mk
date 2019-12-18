@@ -67,8 +67,8 @@ _empty_warnings: .PHONY
 .else
 .BEGIN:
 .endif
-	@echo "ERROR: Invalid: WARNINGS_SET=${ws}"
-	@echo "ERROR: Try one of: ${ALL_WARNINGS_SETS:O:u}"; exit 1
+	@echo "__ERROR: Invalid: WARNINGS_SET=${ws}"
+	@echo "__ERROR: Try one of: ${ALL_WARNINGS_SETS:O:u}"; exit 1
 
 .endif
 .endfor

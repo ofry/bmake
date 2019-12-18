@@ -366,7 +366,7 @@ extern int getgroups(int n, int *groups);
    Null terminate it if the name is shorter than LEN.
    If the host name is longer than LEN, set errno = EINVAL and return -1.
    Return 0 if successful, otherwise set errno and return -1.  */
-#if !HAVE_GETHOSTNAME
+#if !HAVE_GETHOSTNAME && !(defined _WIN32 && ! defined __CYGWIN__)
 extern int gethostname(char *name, size_t len);
 #endif
 
