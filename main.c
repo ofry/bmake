@@ -783,7 +783,7 @@ Main_SetObjdir(const char *fmt, ...)
 	vsnprintf(path = buf, MAXPATHLEN, fmt, ap);
 	va_end(ap);
 
-	if (path[0] != '/') {
+	if (path[0] != '/' && curdir[0] == '/') { //because directory path could start not from '/' (example: Windows OS family)
 		snprintf(buf2, MAXPATHLEN, "%s/%s", curdir, path);
 		path = buf2;
 	}
