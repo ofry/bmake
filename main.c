@@ -160,6 +160,10 @@ __RCSID("$NetBSD: main.c,v 1.273 2017/10/28 21:54:54 sjg Exp $");
 #include "pathnames.h"
 #include "trace.h"
 
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include <process.h>
+#endif
+
 #ifdef USE_IOVEC
 #include <sys/uio.h>
 #endif
@@ -1644,15 +1648,27 @@ char *
 Cmd_Exec(const char *cmd, const char **errnum)
 {
     const char	*args[4];   	/* Args for invoking the shell */
+#if !(defined _WIN32 && ! defined __CYGWIN__)
     int 	fds[2];	    	/* Pipe streams */
+#else
+	FILE * fds[2];
+#endif
     int 	cpid;	    	/* Child PID */
     int 	pid;	    	/* PID from wait() */
     char	*res;		/* result */
+#if !(defined _WIN32 && ! defined __CYGWIN__)
     WAIT_T	status;		/* command exit status */
+#else
+    int status;
+    char command[4096] = ""; /* generated cmd string for launch */
+    char escapedCmd[4096] = "";
+    char escapedCmdLaunchList[4096] = ""; /* temporary string */
+#endif
     Buffer	buf;		/* buffer to store the result */
     char	*cp;
     int		cc;		/* bytes read, or -1 */
     int		savederr;	/* saved errno */
+
 
 
     *errnum = NULL;
@@ -1667,6 +1683,7 @@ Cmd_Exec(const char *cmd, const char **errnum)
     args[2] = cmd;
     args[3] = NULL;
 
+#if !(defined _WIN32 && ! defined __CYGWIN__)
     /*
      * Open a pipe for fetching its output
      */
@@ -1675,11 +1692,13 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	goto bad;
     }
 
+
     /*
      * Fork
      */
     switch (cpid = vFork()) {
     case 0:
+
 	/*
 	 * Close input side of pipe
 	 */
@@ -1692,8 +1711,10 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	 */
 	(void)dup2(fds[1], 1);
 	(void)close(fds[1]);
-
+#endif
 	Var_ExportVars();
+
+#if !(defined _WIN32 && ! defined __CYGWIN__)
 
 	(void)execv(shellPath, UNCONST(args));
 	_exit(1);
@@ -1704,14 +1725,34 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	goto bad;
 
     default:
-	/*
-	 * No need for the writing half
-	 */
-	(void)close(fds[1]);
+        /*
+ * No need for the writing half
+ */
+        (void)close(fds[1]);
+#else
+      str_escape(escapedCmd, args[2], 4096);
+      strncpy(command, str_concat(shellExecCmd,
+      		str_concat("\"",
+      				str_concat(str_concat(args[0],
+                                      str_concat(args[1],
+                                      		str_concat("'",
+      											str_concat(escapedCmd, "'", 0),
+      										0),
+      										STR_ADDSPACE),
+                                      STR_ADDSPACE), "\"", 0),
+      				0),
+      				STR_ADDSPACE), 4096);
+      fds[0] = _popen(command, "rb");
+      if (fds[0] == NULL) {
+      	savederr = errno;
+      }
+#endif
+
 
 	savederr = 0;
 	Buf_Init(&buf, 0);
 
+#if !(defined _WIN32 && ! defined __CYGWIN__)
 	do {
 	    char   result[BUFSIZ];
 	    cc = read(fds[0], result, sizeof(result));
@@ -1722,10 +1763,12 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	if (cc == -1)
 	    savederr = errno;
 
+
 	/*
 	 * Close the input side of the pipe.
 	 */
 	(void)close(fds[0]);
+
 
 	/*
 	 * Wait for the process to exit.
@@ -1734,16 +1777,33 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	    JobReapChild(pid, status, FALSE);
 	    continue;
 	}
+#else
+	do {
+	    char   result[BUFSIZ];
+	    cc = fread(result, sizeof(char), BUFSIZ, fds[0]);
+	    if (cc > 0)
+		Buf_AddBytes(&buf, cc, result);
+	}
+	while (cc > 0);
+#endif
 	cc = Buf_Size(&buf);
 	res = Buf_Destroy(&buf, FALSE);
 
 	if (savederr != 0)
 	    *errnum = "Couldn't read shell's output for \"%s\"";
 
+#if !(defined _WIN32 && ! defined __CYGWIN__)
 	if (WIFSIGNALED(status))
 	    *errnum = "\"%s\" exited on a signal";
-	else if (WEXITSTATUS(status) != 0)
+	else if (WEXITSTATUS(status) != 0) {
+
 	    *errnum = "\"%s\" returned non-zero status";
+    }
+#else
+	if (_pclose(fds[0]) != 0) {
+		*errnum = "\"%s\" returned non-zero status";
+	}
+#endif
 
 	/*
 	 * Null-terminate the result, convert newlines to spaces and
@@ -1764,8 +1824,10 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	    }
 	    cp--;
 	}
+#if !(defined _WIN32 && ! defined __CYGWIN__)
 	break;
     }
+#endif
     return res;
 bad:
     res = bmake_malloc(1);

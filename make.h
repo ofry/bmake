@@ -559,4 +559,6 @@ int cached_stat(const char *, void *);
 #define KILLPG(pid, sig)	killpg((pid), (sig))
 #endif
 
+size_t str_escape(char *dst, const char *src, size_t dstLen);
+
 #endif /* _MAKE_H_ */

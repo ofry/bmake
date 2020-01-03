@@ -326,8 +326,12 @@ const char *shellPath = NULL,		  	  /* full pathname of
 						   * executable image */
            *shellName = NULL;		      	  /* last component of shell */
 char *shellErrFlag = NULL;
-static const char *shellArgv = NULL;		  /* Custom shell args */
 
+#if (defined _WIN32 && ! defined __CYGWIN__)
+const char *shellExecCmd = NULL;
+#endif
+
+static const char *shellArgv = NULL;		  /* Custom shell args */
 
 STATIC Job	*job_table;	/* The structures that describe them */
 STATIC Job	*job_table_end;	/* job_table + maxJobs */
@@ -2211,6 +2215,11 @@ Shell_Init(void)
 #endif
 	shellPath = str_concat(_PATH_DEFSHELLDIR, shellName, STR_ADDSLASH);
     }
+#if (defined _WIN32 && ! defined __CYGWIN__)
+    if (shellExecCmd == NULL) {
+        shellExecCmd = getShellLaunchPrefix();
+    }
+#endif
     if (commandShell->exit == NULL) {
 	commandShell->exit = "";
     }

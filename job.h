@@ -244,6 +244,9 @@ typedef struct Shell {
 extern const char *shellPath;
 extern const char *shellName;
 extern char *shellErrFlag;
+#if (defined _WIN32 && ! defined __CYGWIN__)
+extern const char *shellExecCmd;
+#endif
 
 extern int	jobTokensRunning; /* tokens currently "out" */
 extern int	maxJobs;	/* Max jobs we can run */

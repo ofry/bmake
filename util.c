@@ -2984,3 +2984,113 @@ waitpid (pid_t pid, int *statusp, int options)
     return _cwait (statusp, pid, WAIT_CHILD);
 }
 #endif
+
+#if (defined _WIN32 && ! defined __CYGWIN__)
+char *
+getShellLaunchPrefix()
+{
+    const char *sysRootPath = getenv("SYSROOTWINDOWSPATH");
+    const char *msystemPrefix = getenv("MSYSTEM");
+
+    if (sysRootPath == NULL || msystemPrefix == NULL) {
+        return NULL; /*we can't find mingw shell installed on this system */
+    }
+    else {
+        /* we will return something like
+         * C:\msys64\usr\bin\env MSYSTEM=MINGW64 /usr/bin/bash -lc
+         */
+        return str_concat(
+                   str_concat(
+                       str_concat(sysRootPath, "usr\\bin\\env.exe MSYSTEM=", 0),
+                       msystemPrefix, 0),
+                   "/usr/bin/bash -lc", STR_ADDSPACE);
+    }
+}
+
+#endif
+
+#include <stdint.h>
+#include <stdlib.h>
+#if (defined _WIN32 && ! defined __CYGWIN__)
+#include "headers-mingw/stdlib.h"
+#endif
+#include <string.h>
+
+size_t str_escape(char *dst, const char *src, size_t dstLen)
+{
+    const char complexCharMap[] = "abtnvfr";
+
+    size_t i;
+    size_t srcLen = strlen(src);
+    size_t dstIdx = 0;
+
+    // If caller wants to determine required length (supplying NULL for dst)
+    // then we set dstLen to SIZE_MAX and pretend the buffer is the largest
+    // possible, but we never write to it. Caller can also provide dstLen
+    // as 0 if no limit is wanted.
+    if (dst == NULL || dstLen == 0) dstLen = SIZE_MAX;
+
+    for (i = 0; i < srcLen && dstIdx < dstLen; i++)
+    {
+        size_t complexIdx = 0;
+
+        switch (src[i])
+        {
+            case '\'':
+            case '\"':
+            case '\\':
+                if (dst && dstIdx <= dstLen - 2)
+                {
+                    dst[dstIdx++] = '\\';
+                    dst[dstIdx++] = src[i];
+                }
+                else dstIdx += 2;
+                break;
+
+            case '\r': complexIdx++;
+            case '\f': complexIdx++;
+            case '\v': complexIdx++;
+            case '\n': complexIdx++;
+            case '\t': complexIdx++;
+            case '\b': complexIdx++;
+            case '\a':
+                if (dst && dstIdx <= dstLen - 2)
+                {
+                    dst[dstIdx++] = '\\';
+                    dst[dstIdx++] = complexCharMap[complexIdx];
+                }
+                else dstIdx += 2;
+                break;
+
+            default:
+                if (isprint(src[i]))
+                {
+                    // simply copy the character
+                    if (dst)
+                        dst[dstIdx++] = src[i];
+                    else
+                        dstIdx++;
+                }
+                else
+                {
+                    // produce octal escape sequence
+                    if (dst && dstIdx <= dstLen - 4)
+                    {
+                        dst[dstIdx++] = '\\';
+                        dst[dstIdx++] = ((src[i] & 0300) >> 6) + '0';
+                        dst[dstIdx++] = ((src[i] & 0070) >> 3) + '0';
+                        dst[dstIdx++] = ((src[i] & 0007) >> 0) + '0';
+                    }
+                    else
+                    {
+                        dstIdx += 4;
+                    }
+                }
+        }
+    }
+
+    if (dst && dstIdx <= dstLen)
+        dst[dstIdx] = '\0';
+
+    return dstIdx;
+}
