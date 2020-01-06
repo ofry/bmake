@@ -3,7 +3,7 @@
 
 # Host platform information; may be overridden
 .if !defined(_HOST_OSNAME)
-_HOST_OSNAME !=	uname -s
+_HOST_OSNAME !=	uname -s | cut -d_ -f1
 .export _HOST_OSNAME
 .endif
 .if !defined(_HOST_OSREL)
