@@ -9,6 +9,9 @@
 /* Shell spec to use by default */
 #undef DEFSHELL_INDEX
 
+/* Define to 1 if you have the `alloca' function. */
+#undef HAVE_ALLOCA
+
 /* Define to 1 if you have the <ar.h> header file. */
 #undef HAVE_AR_H
 
@@ -286,6 +289,18 @@
 
 /* Define to 1 if you have the `realpath' function. */
 #undef HAVE_REALPATH
+
+/* Define to 1 if you have the `regcomp' function. */
+#undef HAVE_REGCOMP
+
+/* Define to 1 if you have the `regerror' function. */
+#undef HAVE_REGERROR
+
+/* Define to 1 if you have the `regexec' function. */
+#undef HAVE_REGEXEC
+
+/* Define to 1 if you have the `regfree' function. */
+#undef HAVE_REGFREE
 
 /* Define to 1 if you have the `rpmatch' function. */
 #undef HAVE_RPMATCH

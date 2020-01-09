@@ -2406,7 +2406,7 @@ if test "${with_filemon+set}" = set; then :
 esac
 else
 
-OS=`uname -s`
+OS=`uname -s | cut -d_ -f1`
 for d in "/usr/include/dev/filemon" "$prefix/include/dev/filemon" "$srcdir/filemon" "$srcdir/../filemon" "$srcdir/../../sys/dev/filemon"
 do
 	for x in "/$OS" ""
@@ -5606,6 +5606,7 @@ fi
 
 for ac_func in \
     _Exit \
+    alloca \
     atoll \
     canonicalize_file_name \
     chown \
@@ -5682,6 +5683,10 @@ for ac_func in \
 	readlinkat \
 	reallocarray \
 	realpath \
+	regcomp \
+	regerror \
+	regexec \
+	regfree \
 	rpmatch \
 	secure_getenv \
 	select \

@@ -48,7 +48,7 @@ AC_ARG_WITH(filemon,
 *) AC_MSG_ERROR(bad value ${withval} given for filemon) ;;
 esac],
 [
-OS=`uname -s`
+OS=`uname -s | cut -d_ -f1`
 for d in "/usr/include/dev/filemon" "$prefix/include/dev/filemon" "$srcdir/filemon" "$srcdir/../filemon" "$srcdir/../../sys/dev/filemon"
 do
 	for x in "/$OS" ""
@@ -172,6 +172,7 @@ AC_FUNC_WAIT3
 dnl Keep this list sorted
 AC_CHECK_FUNCS( \
     _Exit \
+    alloca \
     atoll \
     canonicalize_file_name \
     chown \
@@ -248,6 +249,10 @@ AC_CHECK_FUNCS( \
 	readlinkat \
 	reallocarray \
 	realpath \
+    regcomp \
+    regerror \
+    regexec \
+    regfree \
 	rpmatch \
 	secure_getenv \
 	select \
