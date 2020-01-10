@@ -2426,11 +2426,11 @@ sigprocmask (int operation, const sigset_t *set, sigset_t *old_set)
             for (sig = 0; sig < NSIG; sig++)
                 if ((to_unblock >> sig) & 1)
                 {
-                    if (signal (sig, old_handlers[sig]) != blocked_handler)
-                        /* The application changed a signal handler while the signal
-                           was blocked, bypassing our rpl_signal replacement.
-                           We don't support this.  */
-                        abort ();
+//                    if (signal (sig, old_handlers[sig]) != blocked_handler)
+//                        /* The application changed a signal handler while the signal
+//                           was blocked, bypassing our rpl_signal replacement.
+//                           We don't support this.  */
+//                        abort ();
                     received[sig] = pending_array[sig];
                     blocked_set &= ~(1U << sig);
                     pending_array[sig] = 0;
