@@ -391,7 +391,7 @@ Bmake() {
 	    cd $Mydir &&
 	    MAKESYSPATH=$mksrc SRCTOP=$Mydir OBJTOP=$objdir \
 	    MAKEOBJDIR='${.CURDIR:S,${SRCTOP:tA},${OBJTOP:tA},}' \
-	    ${BMAKE:-$objdir/bmake} -dA -f $Mydir/Makefile "$@"
+	    ${BMAKE:-$objdir/bmake} -dA -f $objdir/Makefile "$@"
     )
 }
 
