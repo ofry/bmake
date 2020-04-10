@@ -414,9 +414,9 @@ op_build() {
 	[ -s make-bootstrap.sh ] || op_configure
 	chmod 755 make-bootstrap.sh || exit 1
 	./make-bootstrap.sh || exit 1
-	# case "$op" in
-	# build) op_test;;
-	# esac
+	case "$op" in
+	build) op_test;;
+	esac
 }
 
 op_test() {
