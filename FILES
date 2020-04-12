@@ -69,7 +69,6 @@ make.c
 make.h
 make_malloc.c
 make_malloc.h
-makefile.in
 meta.c
 meta.h
 metachar.c
