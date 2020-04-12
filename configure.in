@@ -497,7 +497,7 @@ AC_SUBST(diff_u)
 AC_SUBST(use_meta)
 AC_SUBST(filemon_h)
 AC_SUBST(_MAKE_VERSION)
-AC_OUTPUT(makefile Makefile.config make-bootstrap.sh unit-tests/Makefile)
+AC_OUTPUT(Makefile.config make-bootstrap.sh unit-tests/Makefile)
 
 cat <<EOF
 

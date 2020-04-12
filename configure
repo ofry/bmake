@@ -6984,7 +6984,6 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "config.h") CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
-    "makefile") CONFIG_FILES="$CONFIG_FILES makefile" ;;
     "Makefile.config") CONFIG_FILES="$CONFIG_FILES Makefile.config" ;;
     "make-bootstrap.sh") CONFIG_FILES="$CONFIG_FILES make-bootstrap.sh" ;;
     "unit-tests/Makefile") CONFIG_FILES="$CONFIG_FILES unit-tests/Makefile" ;;
