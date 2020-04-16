@@ -524,3 +524,32 @@ Str_SYSVSubst(Buffer *buf, char *pat, char *src, int len)
     /* append the rest */
     Buf_AddBytes(buf, strlen(pat), pat);
 }
+
+char * str_replace_char(const char *s, const char toReplace, const char replacement)
+{
+    int len;
+    int count = 0;
+    char *result;
+
+
+
+    len = strlen(s);
+
+    /* allocate length plus EOS */
+    result = bmake_malloc((unsigned int)(len + 1));
+
+    /* copy first string into place */
+    memcpy(result, s, len);
+
+    count = 0;
+    while(result[count]!='\0')
+    {
+        if(result[count]==toReplace)
+        {
+            result[count]=replacement;
+        }
+        count++;
+    }
+
+    return result;
+}

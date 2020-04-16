@@ -1013,6 +1013,7 @@ main(int argc, char **argv)
 	struct stat sb, sa;
 	char *p1, *path;
 	char mdpath[MAXPATHLEN];
+
 #ifdef FORCE_MACHINE
 	const char *machine = FORCE_MACHINE;
 #else
@@ -1188,6 +1189,10 @@ main(int argc, char **argv)
 		p1 = argv[0];		/* realpath failed */
 	    }
 	}
+
+#if (defined _WIN32 && ! defined __CYGWIN__)
+    p1 = str_replace_char(p1, '\\', '/');
+#endif
 	Var_Set("MAKE", p1, VAR_GLOBAL, 0);
 	Var_Set(".MAKE", p1, VAR_GLOBAL, 0);
 	Var_Set(MAKEFLAGS, "", VAR_GLOBAL, 0);
