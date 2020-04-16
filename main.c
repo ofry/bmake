@@ -219,6 +219,7 @@ static void		purge_cached_realpaths(void);
 static Boolean		ignorePWD;	/* if we use -C, PWD is meaningless */
 static char objdir[MAXPATHLEN + 1];	/* where we chdir'ed to */
 char curdir[MAXPATHLEN + 1];		/* Startup directory */
+char *pcurdir;
 char *progname;				/* the program name */
 char *makeDependfile;
 pid_t myPid;
@@ -1303,7 +1304,16 @@ main(int argc, char **argv)
 		free(ptmp2);
 	}
 #endif
-	Var_Set(".CURDIR", curdir, VAR_GLOBAL, 0);
+#if (defined _WIN32 && ! defined __CYGWIN__)
+    pcurdir = str_replace_char(curdir, '\\', '/');
+	if (pcurdir[1] == ':') { // create msys-style windows path
+	    pcurdir[1] = pcurdir[0];
+	    pcurdir[0] = '/';
+	}
+#else
+	pcurdir = curdir;
+#endif
+	Var_Set(".CURDIR", pcurdir, VAR_GLOBAL, 0);
 
 	/*
 	 * Find the .OBJDIR.  If MAKEOBJDIRPREFIX, or failing that,
