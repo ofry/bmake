@@ -1192,6 +1192,10 @@ main(int argc, char **argv)
 
 #if (defined _WIN32 && ! defined __CYGWIN__)
     p1 = str_replace_char(p1, '\\', '/');
+	if (p1[1] == ':') { // create msys-style windows path
+	    p1[1] = p1[0];
+	    p1[0] = '/';
+	}
 #endif
 	Var_Set("MAKE", p1, VAR_GLOBAL, 0);
 	Var_Set(".MAKE", p1, VAR_GLOBAL, 0);
