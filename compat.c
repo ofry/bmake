@@ -404,7 +404,7 @@ CompatRunCommand(void *cmdp, void *gnp) {
 
 #if (defined _WIN32 && !defined __CYGWIN__)
     av[0] = "bash.exe";
-    retstat = _spawnvp(_P_WAIT, "bash.exe", (char *const *)UNCONST(av));
+    retstat = _spawnvpe(_P_WAIT, "bash.exe", (char *const *)UNCONST(av), _environ);
     if (retstat == -1)
     {
         savederr = errno;
