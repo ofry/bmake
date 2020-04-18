@@ -118,7 +118,6 @@ SED_CMDS.varshell = -e 's,^[a-z]*sh: ,,' \
 	@echo postprocess ${.TARGET}
 	@${TOOL_SED} -e 's,^${TEST_MAKE:T:C/\./\\\./g}[][0-9]*:,make:,' \
 	  -e 's,${TEST_MAKE:C/\./\\\./g},make,' \
-	  -e '/stopped/s, /.*, unit-tests,' \
 	  -e 's,${.CURDIR:C/\./\\\./g}/,,g' \
 	  -e 's,${UNIT_TESTS:C/\./\\\./g}/,,g' ${SED_CMDS.${.TARGET:T:R}} \
 	  < ${.IMPSRC} > ${.TARGET}.tmp
