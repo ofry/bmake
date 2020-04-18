@@ -308,7 +308,7 @@ CompatRunCommand(void *cmdp, void *gnp) {
     if (!*cmd)
         return (0);
 
-#if !defined(MAKE_NATIVE) && !(defined _WIN32 && !defined __CYGWIN__) // for windows MinGW builds we use shell everytime
+#if !defined(MAKE_NATIVE) || (defined _WIN32 && !defined __CYGWIN__) // for windows MinGW builds we use shell everytime
     /*
      * In a non-native build, the host environment might be weird enough
      * that it's necessary to go through a shell to get the correct
