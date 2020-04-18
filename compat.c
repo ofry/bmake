@@ -308,7 +308,7 @@ CompatRunCommand(void *cmdp, void *gnp) {
     if (!*cmd)
         return (0);
 
-#if !defined(MAKE_NATIVE)
+#if !defined(MAKE_NATIVE) && !(defined _WIN32 && !defined __CYGWIN__) // for windows MinGW builds we use shell everytime
     /*
      * In a non-native build, the host environment might be weird enough
      * that it's necessary to go through a shell to get the correct
@@ -403,7 +403,12 @@ CompatRunCommand(void *cmdp, void *gnp) {
 #endif
 
 #if (defined _WIN32 && !defined __CYGWIN__)
-    av[0] = "bash.exe";
+    //av[0] = "bash.exe";
+
+    if (DEBUG(JOB)) {
+        fprintf(debug_file, "av[0]: '%s'\n", av[0]);
+        fprintf(debug_file, "av[1]: '%s'\n", av[1]);
+    }
     retstat = _spawnvpe(_P_WAIT, "bash.exe", (char *const *)UNCONST(av), _environ);
     if (retstat == -1)
     {
