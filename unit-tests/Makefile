@@ -33,7 +33,6 @@ TESTNAMES= \
 	export-all \
 	export-env \
 	doterror \
-	dotwait \
 	forloop \
 	forsubst \
 	hash \
