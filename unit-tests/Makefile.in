@@ -43,7 +43,6 @@ TESTNAMES= \
 	modorder \
 	modts \
 	modword \
-	order \
 	posix \
 	qequals \
 	sunshcmd \
