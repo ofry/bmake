@@ -234,6 +234,7 @@ CompatRunCommand(void *cmdp, void *gnp) {
     int status;    /* Description of child's death */
     pid_t cpid;            /* Child actually found */
     pid_t retstat;        /* Result of wait */
+    char escapedCmd[4096] = ""; // with escaped singlequotes
 #else
     int       retstat;
     int     status;
@@ -373,8 +374,9 @@ CompatRunCommand(void *cmdp, void *gnp) {
 #if !(defined _WIN32 && !defined __CYGWIN__)
         shargv[shargc++] = cmd;
 #else
+        str_escape_singlequote(escapedCmd, cmd, 4096);
         shargv[shargc++] = str_concat(
-                str_concat("'", cmd, 0), "'", 0);
+                str_concat("'", escapedCmd, 0), "'", 0);
 #endif
         shargv[shargc++] = NULL;
         av = shargv;
