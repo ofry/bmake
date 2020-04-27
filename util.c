@@ -3095,7 +3095,7 @@ size_t str_escape(char *dst, const char *src, size_t dstLen)
     return dstIdx;
 }
 
-size_t str_escape_singlequote(char *dst, const char *src, size_t dstLen)
+size_t str_escape_dblquote(char *dst, const char *src, size_t dstLen)
 {
 
     size_t i;
@@ -3114,7 +3114,14 @@ size_t str_escape_singlequote(char *dst, const char *src, size_t dstLen)
 
         switch (src[i])
         {
-            case '\'':
+            case '\"':
+                if (dst && dstIdx <= dstLen - 2)
+                {
+                    dst[dstIdx++] = '\\';
+                    dst[dstIdx++] = src[i];
+                }
+                else dstIdx += 2;
+                break;
             case '\\':
                 if (dst && dstIdx <= dstLen - 2)
                 {
@@ -3123,10 +3130,9 @@ size_t str_escape_singlequote(char *dst, const char *src, size_t dstLen)
                 }
                 else dstIdx += 2;
                 break;
-
             default:
                 // simply copy the character
-                if (dst)
+                if (dst && isprint(src[i]))
                     dst[dstIdx++] = src[i];
                 else
                     dstIdx++;

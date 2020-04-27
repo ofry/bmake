@@ -561,7 +561,7 @@ int cached_stat(const char *, void *);
 
 size_t str_escape(char *dst, const char *src, size_t dstLen);
 
-size_t str_escape_singlequote(char *dst, const char *src, size_t dstLen);
+size_t str_escape_dblquote(char *dst, const char *src, size_t dstLen);
 
 char * str_replace_char(const char *s, const char toReplace, const char replacement);
 

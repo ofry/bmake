@@ -234,12 +234,12 @@ CompatRunCommand(void *cmdp, void *gnp) {
     int status;    /* Description of child's death */
     pid_t cpid;            /* Child actually found */
     pid_t retstat;        /* Result of wait */
-    char escapedCmd[4096] = ""; // with escaped singlequotes
 #else
     int       retstat;
     int     status;
     int		savederr;	/* saved errno */
     char errormsg[4096] = ""; /* related message of this errno */
+    char escapedCmd[4096] = ""; // with escaped singlequotes
 #endif
     LstNode cmdNode;    /* Node where current command is located */
     const char **volatile av;    /* Argument vector for thing to exec */
@@ -374,9 +374,9 @@ CompatRunCommand(void *cmdp, void *gnp) {
 #if !(defined _WIN32 && !defined __CYGWIN__)
         shargv[shargc++] = cmd;
 #else
-        str_escape_singlequote(escapedCmd, cmd, 4096);
+        str_escape_dblquote(escapedCmd, cmd, 4096);
         shargv[shargc++] = str_concat(
-                str_concat("'", escapedCmd, 0), "'", 0);
+                str_concat("\"", escapedCmd, 0), "\"", 0);
 #endif
         shargv[shargc++] = NULL;
         av = shargv;
