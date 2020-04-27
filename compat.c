@@ -408,6 +408,7 @@ CompatRunCommand(void *cmdp, void *gnp) {
     if (DEBUG(JOB)) {
         fprintf(debug_file, "av[0]: '%s'\n", av[0]);
         fprintf(debug_file, "av[1]: '%s'\n", av[1]);
+        fprintf(debug_file, "av[2]: '%s'\n", av[2]);
     }
     retstat = _spawnvpe(_P_WAIT, "bash.exe", (char *const *)UNCONST(av), _environ);
     if (retstat == -1)
