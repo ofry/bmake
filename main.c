@@ -220,6 +220,7 @@ static Boolean		ignorePWD;	/* if we use -C, PWD is meaningless */
 static char objdir[MAXPATHLEN + 1];	/* where we chdir'ed to */
 char curdir[MAXPATHLEN + 1];		/* Startup directory */
 char *pcurdir;
+char *pobjdir;
 char *progname;				/* the program name */
 char *makeDependfile;
 pid_t myPid;
@@ -800,8 +801,17 @@ Main_SetObjdir(const char *fmt, ...)
 				      path, strerror(errno));
 		} else {
 			strncpy(objdir, path, MAXPATHLEN);
-			Var_Set(".OBJDIR", objdir, VAR_GLOBAL, 0);
-			setenv("PWD", objdir, 1);
+#if (defined _WIN32 && ! defined __CYGWIN__)
+            pobjdir = str_replace_char(objdir, '\\', '/');
+            if pobjdir[1] == ':') { // create msys-style windows path
+                pobjdir[1] = pobjdir[0];
+                pobjdir[0] = '/';
+            }
+#else
+            pobjdir = objdir;
+#endif
+			Var_Set(".OBJDIR", pobjdir, VAR_GLOBAL, 0);
+			setenv("PWD", pobjdir, 1);
 			Dir_InitDot();
 			purge_cached_realpaths();
 			rc = TRUE;

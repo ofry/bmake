@@ -2398,7 +2398,7 @@ ParseSetIncludedFile(void)
 static void
 ParseSetParseFile(const char *filename)
 {
-    char *slash, *dirname;
+    char *slash, *dirname, *pdirname;
     const char *pd, *pf;
     int len;
 
@@ -2412,7 +2412,16 @@ ParseSetParseFile(const char *filename)
 	dirname = bmake_malloc(len + 1);
 	memcpy(dirname, filename, len);
 	dirname[len] = '\0';
-	Var_Set(".PARSEDIR", pd = dirname, VAR_GLOBAL, 0);
+#if (defined _WIN32 && ! defined __CYGWIN__)
+        pdirname = str_replace_char(dirname, '\\', '/');
+            if pdirname[1] == ':') { // create msys-style windows path
+                pdirname[1] = pdirname[0];
+                pdirname[0] = '/';
+            }
+#else
+        pobjdir = objdir;
+#endif
+	Var_Set(".PARSEDIR", pd = pdirname, VAR_GLOBAL, 0);
 	Var_Set(".PARSEFILE", pf = slash + 1, VAR_GLOBAL, 0);
     }
     if (DEBUG(PARSE))
