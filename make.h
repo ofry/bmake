@@ -444,6 +444,7 @@ extern Lst	sysIncPath;	/* The system include path. */
 extern Lst	defIncPath;	/* The default include path. */
 
 extern char	curdir[];	/* Startup directory */
+extern char	*pcurdir;	/* Startup directory */
 extern char	*progname;	/* The program name */
 extern char	*makeDependfile; /* .depend */
 extern char	**savedEnv;	 /* if we replaced environ this will be non-NULL */

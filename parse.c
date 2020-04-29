@@ -2404,7 +2404,7 @@ ParseSetParseFile(const char *filename)
 
     slash = strrchr(filename, '/');
     if (slash == NULL) {
-	Var_Set(".PARSEDIR", pd = curdir, VAR_GLOBAL, 0);
+	Var_Set(".PARSEDIR", pd = pcurdir, VAR_GLOBAL, 0);
 	Var_Set(".PARSEFILE", pf = filename, VAR_GLOBAL, 0);
 	dirname= NULL;
     } else {
@@ -2414,7 +2414,7 @@ ParseSetParseFile(const char *filename)
 	dirname[len] = '\0';
 #if (defined _WIN32 && ! defined __CYGWIN__)
         pdirname = str_replace_char(dirname, '\\', '/');
-            if pdirname[1] == ':') { // create msys-style windows path
+            if (pdirname[1] == ':') { // create msys-style windows path
                 pdirname[1] = pdirname[0];
                 pdirname[0] = '/';
             }

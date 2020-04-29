@@ -803,7 +803,7 @@ Main_SetObjdir(const char *fmt, ...)
 			strncpy(objdir, path, MAXPATHLEN);
 #if (defined _WIN32 && ! defined __CYGWIN__)
             pobjdir = str_replace_char(objdir, '\\', '/');
-            if pobjdir[1] == ':') { // create msys-style windows path
+            if (pobjdir[1] == ':') { // create msys-style windows path
                 pobjdir[1] = pobjdir[0];
                 pobjdir[0] = '/';
             }
