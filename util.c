@@ -3131,17 +3131,17 @@ size_t str_escape_dblquote(char *dst, const char *src, size_t dstLen)
                 else dstIdx += 2;
                 break;
             default:
-                if (isprint(src[i]))
-                {
+//                if (isprint(src[i]) || src[i] == '\n' || src[i] == '\r')
+//                {
                     // simply copy the character
                     if (dst)
                         dst[dstIdx++] = src[i];
                     else
                         dstIdx++;
-                }
-                else {
-                    dst[dstIdx++] = ' ';
-                }
+//                }
+//                else {
+//                    dst[dstIdx++] = ' ';
+//                }
         }
     }
 
