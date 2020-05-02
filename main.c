@@ -1052,11 +1052,18 @@ main(int argc, char **argv)
 	 */
 	gettimeofday(&rightnow, NULL);
 	srandom(rightnow.tv_sec + rightnow.tv_usec);
-	
+
+#if (defined _WIN32 && ! defined __CYGWIN__)
+    if ((progname = strrchr(argv[0], '\\')) != NULL)
+		progname++;
+	else
+		progname = argv[0];
+#else
 	if ((progname = strrchr(argv[0], '/')) != NULL)
 		progname++;
 	else
 		progname = argv[0];
+#endif
 #if defined(HAVE_SETRLIMIT) && defined(RLIMIT_NOFILE)
 	/*
 	 * get rid of resource limit on file descriptors
