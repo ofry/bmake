@@ -114,6 +114,7 @@ SED_CMDS.varshell = -e 's,^[a-z]*sh: ,,' \
 .rawout.out:
 	@echo postprocess ${.TARGET}
 	@${TOOL_SED} -e 's,^${TEST_MAKE:T:C/\./\\\./g}[][0-9]*:,make:,' \
+	  -e 's,^${TEST_MAKE:T:C/\./\\\./g}\.exe[][0-9]*:,make:,' \
 	  -e 's,${TEST_MAKE:C/\./\\\./g},make,' \
 	  -e '/stopped/s, /.*, unit-tests,' \
 	  -e 's,${.CURDIR:C/\./\\\./g}/,,g' \
