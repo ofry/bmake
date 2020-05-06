@@ -119,7 +119,7 @@ SED_CMDS.varshell = -e 's,^[a-z]*sh: ,,' \
 	  -e 's,${TEST_MAKE:C/\./\\\./g},make,' \
 	  -e '/stopped/s, /.*, unit-tests,' \
 	  -e 's,${.CURDIR:C/\./\\\./g}/,,g' \
-	  -e 's,${WIN_UNIT_TESTS:C/\./\\\./g}/,,g' \
+	  -e 's,${WIN_UNIT_TESTS:C/\./\\\./g},unit-tests,g' \
 	  -e 's,${UNIT_TESTS:C/\./\\\./g}/,,g' ${SED_CMDS.${.TARGET:T:R}} \
 	  < ${.IMPSRC} > ${.TARGET}.tmp
 	@echo "exit status `cat ${.TARGET:R}.status`" >> ${.TARGET}.tmp
