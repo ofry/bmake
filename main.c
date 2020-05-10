@@ -2235,7 +2235,8 @@ getTmpdir(void)
 	 * Honor $TMPDIR but only if it is valid.
 	 * Ensure it ends with /.
 	 */
-	tmpdir = Var_Subst(NULL, "${TMPDIR:tA:U" _PATH_TMP "}/", VAR_GLOBAL,
+	tmpdir = Var_Subst(NULL, str_concat(
+                str_concat("${TMPDIR:tA:U", _PATH_TMP, 0), "}/", 0), VAR_GLOBAL,
 			   VARF_WANTRES);
 	if (stat(tmpdir, &st) < 0 || !S_ISDIR(st.st_mode)) {
 	    free(tmpdir);

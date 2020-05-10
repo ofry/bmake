@@ -58,5 +58,9 @@
 # endif
 #endif
 #ifndef _PATH_TMP
-#define	_PATH_TMP		"/tmp/"		/* with trailing slash */
+# if (defined _WIN32 && ! defined __CYGWIN__)
+# define	_PATH_TMP		(getenv("TEMP"))
+# else
+# define	_PATH_TMP		"/tmp/"		/* with trailing slash */
+# endif
 #endif
