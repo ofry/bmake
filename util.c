@@ -3250,13 +3250,13 @@ static int create_child_process(system_np_t* system) {
     siStartInfo.hStdOutput = child_stdout_write;
     siStartInfo.dwFlags |= STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
     siStartInfo.wShowWindow = SW_HIDE;
-    bool b = CreateProcessA(null,
+    bool b = CreateProcessA("bash.exe",
                             (char*)system->command,
                             null,               // process security attributes
                             null,               // primary thread security attributes
                             true,               // handles are inherited
                             CREATE_NO_WINDOW,   // creation flags
-                            null,               // use parent's environment
+                            _environ,               // use parent's environment
                             null,               // use parent's current directory
                             &siStartInfo,       // STARTUPINFO pointer
                             &system->pi);       // receives PROCESS_INFORMATION

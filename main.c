@@ -1720,7 +1720,11 @@ Cmd_Exec(const char *cmd, const char **errnum)
     /*
      * Set up arguments for shell
      */
+#if !(defined _WIN32 && ! defined __CYGWIN__)
     args[0] = shellName;
+#else
+    args[0] = "bash.exe";
+#endif
     args[1] = "-c";
     args[2] = cmd;
     args[3] = NULL;
