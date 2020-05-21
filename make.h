@@ -566,4 +566,8 @@ size_t str_escape_dblquote(char *dst, const char *src, size_t dstLen);
 
 char * str_replace_char(const char *s, const char toReplace, const char replacement);
 
+int system_np(const char* command, int timeout_milliseconds,
+              char* stdout_data, int stdout_data_size,
+              char* stderr_data, int stderr_data_size, int* exit_code);
+
 #endif /* _MAKE_H_ */

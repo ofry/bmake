@@ -1694,13 +1694,17 @@ Cmd_Exec(const char *cmd, const char **errnum)
     char	*res;		/* result */
 #if !(defined _WIN32 && ! defined __CYGWIN__)
     WAIT_T	status;		/* command exit status */
+    Buffer	buf;		/* buffer to store the result */
 #else
     int status;
     char command[4096] = ""; /* generated cmd string for launch */
     char escapedCmd[4096] = "";
     char escapedCmdLaunchList[4096] = ""; /* temporary string */
+    static char stdout_data[16 * 1024 * 1024] = ""; //stdout
+    static char stderr_data[16 * 1024 * 1024] = "";
+    int exit_code = 0;
 #endif
-    Buffer	buf;		/* buffer to store the result */
+
     char	*cp;
     int		cc;		/* bytes read, or -1 */
     int		savederr;	/* saved errno */
@@ -1766,29 +1770,40 @@ Cmd_Exec(const char *cmd, const char **errnum)
  */
         (void)close(fds[1]);
 #else
-      str_escape(escapedCmd, args[2], 4096);
-      strncpy(command, str_concat(shellExecCmd,
+//      str_escape(escapedCmd, args[2], 4096);
+//      strncpy(command, str_concat(shellExecCmd,
+//      		str_concat("\"",
+//      				str_concat(str_concat(args[0],
+//                                      str_concat(args[1],
+//                                      		str_concat("'",
+//      											str_concat(escapedCmd, "'", 0),
+//      										0),
+//      										STR_ADDSPACE),
+//                                      STR_ADDSPACE), "\"", 0),
+//      				0),
+//      				STR_ADDSPACE), 4096);
+//      fds[0] = _popen(command, "rb");
+//      if (fds[0] == NULL) {
+//      	savederr = errno;
+//      }
+        str_escape_dblquote(escapedCmd, cmd, 4096);
+        strncpy(command,
       		str_concat("\"",
       				str_concat(str_concat(args[0],
                                       str_concat(args[1],
-                                      		str_concat("'",
-      											str_concat(escapedCmd, "'", 0),
+                                      		str_concat("\"",
+      											str_concat(escapedCmd, "\"", 0),
       										0),
       										STR_ADDSPACE),
                                       STR_ADDSPACE), "\"", 0),
-      				0),
-      				STR_ADDSPACE), 4096);
-      fds[0] = _popen(command, "rb");
-      if (fds[0] == NULL) {
-      	savederr = errno;
-      }
+      				0), 4096);
+        status = system_np(command, 100 * 1000, stdout_data, sizeof(stdout_data), stderr_data, sizeof(stderr_data), &exit_code);
 #endif
 
-
+#if !(defined _WIN32 && ! defined __CYGWIN__)
 	savederr = 0;
 	Buf_Init(&buf, 0);
 
-#if !(defined _WIN32 && ! defined __CYGWIN__)
 	do {
 	    char   result[BUFSIZ];
 	    cc = read(fds[0], result, sizeof(result));
@@ -1799,12 +1814,10 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	if (cc == -1)
 	    savederr = errno;
 
-
 	/*
 	 * Close the input side of the pipe.
 	 */
 	(void)close(fds[0]);
-
 
 	/*
 	 * Wait for the process to exit.
@@ -1813,20 +1826,17 @@ Cmd_Exec(const char *cmd, const char **errnum)
 	    JobReapChild(pid, status, FALSE);
 	    continue;
 	}
-#else
-	do {
-	    char   result[BUFSIZ];
-	    cc = fread(result, sizeof(char), BUFSIZ, fds[0]);
-	    if (cc > 0)
-		Buf_AddBytes(&buf, cc, result);
-	}
-	while (cc > 0);
-#endif
+
 	cc = Buf_Size(&buf);
 	res = Buf_Destroy(&buf, FALSE);
 
 	if (savederr != 0)
 	    *errnum = "Couldn't read shell's output for \"%s\"";
+#else
+    cc = strlen(stdout_data);
+    res = bmake_malloc(cc + 1);
+	strncpy(res, stdout_data, cc);
+#endif
 
 #if !(defined _WIN32 && ! defined __CYGWIN__)
 	if (WIFSIGNALED(status))
@@ -1835,10 +1845,6 @@ Cmd_Exec(const char *cmd, const char **errnum)
 
 	    *errnum = "\"%s\" returned non-zero status";
     }
-#else
-	if (_pclose(fds[0]) != 0) {
-		*errnum = "\"%s\" returned non-zero status";
-	}
 #endif
 
 	/*
