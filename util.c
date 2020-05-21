@@ -3152,6 +3152,16 @@ size_t str_escape_dblquote(char *dst, const char *src, size_t dstLen)
 }
 
 #if (defined _WIN32 && ! defined __CYGWIN__)
+#include <windows.h>
+//#include <stdio.h>
+//#include <malloc.h>
+
+#define bool        _Bool
+#define true        1
+#define false        0
+
+#define null ((void*)0)
+
 typedef struct system_np_s {
     HANDLE child_stdout_read;
     HANDLE child_stderr_read;
@@ -3170,7 +3180,7 @@ static int peek_pipe(HANDLE pipe, char* data, int size) {
     char buffer[4 * 1024];
     DWORD read = 0;
     DWORD available = 0;
-    bool b = PeekNamedPipe(pipe, null, sizeof(data), null, &available, null);
+    bool b = PeekNamedPipe(pipe, null, sizeof(buffer), null, &available, null);
     if (!b) {
         return -1;
     } else if (available > 0) {

@@ -176,6 +176,8 @@ __RCSID("$NetBSD: main.c,v 1.273 2017/10/28 21:54:54 sjg Exp $");
 # define __arraycount(__x)	(sizeof(__x) / sizeof(__x[0]))
 #endif
 
+FILE *debug_file;		/* Output written here - default stdout */
+
 Lst			create;		/* Targets to be made */
 time_t			now;		/* Time at start of make */
 GNode			*DEFAULT;	/* .DEFAULT node */

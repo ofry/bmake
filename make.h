@@ -474,7 +474,7 @@ extern pid_t	myPid;
  *	There is one bit per module.  It is up to the module what debug
  *	information to print.
  */
-FILE *debug_file;		/* Output written here - default stdout */
+extern FILE *debug_file;		/* Output written here - default stdout */
 extern int debug;
 #define	DEBUG_ARCH	0x00001
 #define	DEBUG_COND	0x00002
@@ -566,7 +566,7 @@ size_t str_escape_dblquote(char *dst, const char *src, size_t dstLen);
 
 char * str_replace_char(const char *s, const char toReplace, const char replacement);
 
-int system_np(const char* command, int timeout_milliseconds,
+extern int system_np(const char* command, int timeout_milliseconds,
               char* stdout_data, int stdout_data_size,
               char* stderr_data, int stderr_data_size, int* exit_code);
 
