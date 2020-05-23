@@ -3250,7 +3250,7 @@ static int create_child_process(system_np_t* system) {
     siStartInfo.hStdOutput = child_stdout_write;
     siStartInfo.dwFlags |= STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
     siStartInfo.wShowWindow = SW_HIDE;
-    bool b = CreateProcessA("bash.exe",
+    bool b = CreateProcessA(null,
                             (char*)system->command,
                             null,               // process security attributes
                             null,               // primary thread security attributes

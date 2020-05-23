@@ -1698,6 +1698,7 @@ Cmd_Exec(const char *cmd, const char **errnum)
     WAIT_T	status;		/* command exit status */
     Buffer	buf;		/* buffer to store the result */
 #else
+    const char *sysRootPath = getenv("SYSROOTWINDOWSPATH");
     int status;
     char command[4096] = ""; /* generated cmd string for launch */
     char escapedCmd[4096] = "";
@@ -1723,7 +1724,7 @@ Cmd_Exec(const char *cmd, const char **errnum)
 #if !(defined _WIN32 && ! defined __CYGWIN__)
     args[0] = shellName;
 #else
-    args[0] = "bash.exe";
+    args[0] = str_concat(sysRootPath, "usr\\bin\\bash.exe", 0);
 #endif
     args[1] = "-c";
     args[2] = cmd;
@@ -1794,15 +1795,18 @@ Cmd_Exec(const char *cmd, const char **errnum)
 //      }
         str_escape_dblquote(escapedCmd, cmd, 4096);
         strncpy(command,
-      		str_concat("\"",
-      				str_concat(str_concat(args[0],
+//      		str_concat("\"",
+//      				str_concat(
+      				        str_concat(args[0],
                                       str_concat(args[1],
                                       		str_concat("\"",
       											str_concat(escapedCmd, "\"", 0),
       										0),
       										STR_ADDSPACE),
-                                      STR_ADDSPACE), "\"", 0),
-      				0), 4096);
+                                      STR_ADDSPACE),
+//                                    , "\"", 0),
+//     				0),
+      				4096);
         status = system_np(command, 100 * 1000, stdout_data, sizeof(stdout_data), stderr_data, sizeof(stderr_data), &exit_code);
 #endif
 
