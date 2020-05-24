@@ -1723,10 +1723,12 @@ Cmd_Exec(const char *cmd, const char **errnum)
      */
 #if !(defined _WIN32 && ! defined __CYGWIN__)
     args[0] = shellName;
+    args[1] = "-c";
 #else
     args[0] = str_concat(sysRootPath, "usr\\bin\\bash.exe", 0);
+    args[1] = "-lc";
 #endif
-    args[1] = "-c";
+
     args[2] = cmd;
     args[3] = NULL;
 

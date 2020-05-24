@@ -3256,7 +3256,7 @@ static int create_child_process(system_np_t* system) {
                             null,               // primary thread security attributes
                             true,               // handles are inherited
                             CREATE_NO_WINDOW,   // creation flags
-                            _environ,               // use parent's environment
+                            null,               // use parent's environment
                             null,               // use parent's current directory
                             &siStartInfo,       // STARTUPINFO pointer
                             &system->pi);       // receives PROCESS_INFORMATION
