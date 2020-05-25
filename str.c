@@ -542,7 +542,7 @@ char * str_replace_char(const char *s, const char toReplace, const char replacem
     memcpy(result, s, len + 1);
 
     count = 0;
-    while(result[count]!='\0' && count <= len)
+    while(result[count]!='\0' && count < len)
     {
         if(result[count]==toReplace)
         {
