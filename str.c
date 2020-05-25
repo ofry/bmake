@@ -539,10 +539,10 @@ char * str_replace_char(const char *s, const char toReplace, const char replacem
     result = bmake_malloc((unsigned int)(len + 1));
 
     /* copy first string into place */
-    memcpy(result, s, len);
+    memcpy(result, s, len + 1);
 
     count = 0;
-    while(result[count]!='\0')
+    while(result[count]!='\0' && count <= len)
     {
         if(result[count]==toReplace)
         {
