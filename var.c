@@ -154,7 +154,7 @@ __RCSID("$NetBSD: var.c,v 1.221 2018/12/21 05:50:19 sjg Exp $");
 #include    "metachar.h"
 
 #if (defined _WIN32 && !defined __CYGWIN__)
-#include <windows.h>
+#include <winnls.h>
 #endif
 
 extern int makelevel;
