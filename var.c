@@ -153,6 +153,10 @@ __RCSID("$NetBSD: var.c,v 1.221 2018/12/21 05:50:19 sjg Exp $");
 #include    "job.h"
 #include    "metachar.h"
 
+#if (defined _WIN32 && !defined __CYGWIN__)
+#include <windows.h>
+#endif
+
 extern int makelevel;
 /*
  * This lets us tell if we have replaced the original environ
