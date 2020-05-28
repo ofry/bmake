@@ -25,7 +25,12 @@ LIBS="@LIBS@"
 MACHINE="@machine@"
 
 if [ "$(expr substr ${MACHINE} 1 5)" == "mingw" ]; then
-    LIBS+=" -lws2_32 -lwsock32 -liconv"
+    LIBS+=" -lws2_32 -lwsock32"
+    CFLAGS+=""
+fi
+
+if [ "$(expr substr ${MACHINE} 1 5)" == "mingw32" ]; then
+    LIBS+=" -liconv -lkernel32"
     CFLAGS+=""
 fi
 
