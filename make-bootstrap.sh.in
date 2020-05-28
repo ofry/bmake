@@ -29,7 +29,7 @@ if [ "$(expr substr ${MACHINE} 1 5)" == "mingw" ]; then
     CFLAGS+=""
 fi
 
-if [ "$(expr substr ${MACHINE} 1 5)" == "mingw32" ]; then
+if [ "$(expr substr ${MACHINE} 1 7)" == "mingw32" ]; then
     LIBS+=" -liconv -lkernel32"
     CFLAGS+=""
 fi
