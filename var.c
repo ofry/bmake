@@ -955,6 +955,20 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
     Var *v;
     char *expanded_name = NULL;
 
+
+#if (defined _WIN32 && ! defined __CYGWIN__)
+    char *unix_val;
+    char *error;
+    if (val && strlen(val) > 0 && val[1] == ':') {
+        unix_val = Cmd_Exec(getUnixPathCmd(val), &error);
+    }
+    else {
+        unix_val = val;
+    }
+#else
+    const char *unix_val = val;
+#endif
+
     /*
      * We only look for a variable in the given context since anything set
      * here will override anything in a lower context, so there's not much
@@ -966,7 +980,7 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
             if (DEBUG(VAR)) {
                 fprintf(debug_file, "Var_Set(\"%s\", \"%s\", ...) "
                                     "name expands to empty string - ignored\n",
-                        name, val);
+                        name, unix_val);
             }
             free(expanded_name);
             return;
@@ -978,7 +992,7 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
         if (v != NULL) {
             if ((v->flags & VAR_FROM_CMD)) {
                 if (DEBUG(VAR)) {
-                    fprintf(debug_file, "%s:%s = %s ignored!\n", ctxt->name, name, val);
+                    fprintf(debug_file, "%s:%s = %s ignored!\n", ctxt->name, name, unix_val);
                 }
                 goto out;
             }
@@ -995,14 +1009,14 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
 	     */
             Var_Delete(name, VAR_GLOBAL);
         }
-        VarAdd(name, val, ctxt);
+        VarAdd(name, unix_val, ctxt);
     } else {
         Buf_Empty(&v->val);
-        if (val)
-            Buf_AddBytes(&v->val, strlen(val), val);
+        if (unix_val)
+            Buf_AddBytes(&v->val, strlen(unix_val), unix_val);
 
         if (DEBUG(VAR)) {
-            fprintf(debug_file, "%s:%s = %s\n", ctxt->name, name, val);
+            fprintf(debug_file, "%s:%s = %s\n", ctxt->name, name, unix_val);
         }
         if ((v->flags & VAR_EXPORTED)) {
             Var_Export1(name, VAR_EXPORT_PARENT);
@@ -1026,13 +1040,13 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
 	 * Makefile settings.
 	 */
         if (varNoExportEnv != TRUE)
-            setenv(name, val ? val : "", 1);
+            setenv(name, unix_val ? unix_val : "", 1);
 
         Var_Append(MAKEOVERRIDES, name, VAR_GLOBAL);
     }
     if (*name == '.') {
         if (strcmp(name, SAVE_DOLLARS) == 0)
-            save_dollars = s2Boolean(val, save_dollars);
+            save_dollars = s2Boolean(unix_val, save_dollars);
     }
 
     out:
@@ -1174,7 +1188,19 @@ Var_Value(const char *name, GNode *ctxt, char **frp) {
     v = VarFind(name, ctxt, FIND_ENV | FIND_GLOBAL | FIND_CMD);
     *frp = NULL;
     if (v != NULL) {
-        char *p = (Buf_GetAll(&v->val, NULL));
+        char *raw = (Buf_GetAll(&v->val, NULL));
+#if (defined _WIN32 && ! defined __CYGWIN__)
+        char *p;
+        const char *error;
+        if (raw[1] == ':') { // it is windows path
+            p = Cmd_Exec(getUnixPathCmd(raw), &error);
+        }
+        else {
+            p = raw;
+        }
+#else
+      char *p = raw;
+#endif
         if (VarFreeEnv(v, FALSE))
             *frp = p;
         return p;

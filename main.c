@@ -1026,6 +1026,7 @@ main(int argc, char **argv)
 	struct stat sb, sa;
 	char *p1, *path;
 	char mdpath[MAXPATHLEN];
+    const char *error;
 
 #ifdef FORCE_MACHINE
 	const char *machine = FORCE_MACHINE;
@@ -1211,11 +1212,12 @@ main(int argc, char **argv)
 	}
 
 #if (defined _WIN32 && ! defined __CYGWIN__)
-    p1 = str_replace_char(p1, '\\', '/');
-	if (p1[1] == ':') { // create msys-style windows path
-	    p1[1] = p1[0];
-	    p1[0] = '/';
-	}
+//    p1 = str_replace_char(p1, '\\', '/');
+//	if (p1[1] == ':') { // create msys-style windows path
+//	    p1[1] = p1[0];
+//	    p1[0] = '/';
+//	}
+p1 = Cmd_Exec(getUnixPathCmd(p1), &error);
 #endif
 	Var_Set("MAKE", p1, VAR_GLOBAL, 0);
 	Var_Set(".MAKE", p1, VAR_GLOBAL, 0);
@@ -1324,11 +1326,12 @@ main(int argc, char **argv)
 	}
 #endif
 #if (defined _WIN32 && ! defined __CYGWIN__)
-    pcurdir = str_replace_char(curdir, '\\', '/');
-	if (pcurdir[1] == ':') { // create msys-style windows path
-	    pcurdir[1] = pcurdir[0];
-	    pcurdir[0] = '/';
-	}
+//    pcurdir = str_replace_char(curdir, '\\', '/');
+//	if (pcurdir[1] == ':') { // create msys-style windows path
+//	    pcurdir[1] = pcurdir[0];
+//	    pcurdir[0] = '/';
+//	}
+pcurdir = Cmd_Exec(getUnixPathCmd(curdir), &error);
 #else
 	pcurdir = curdir;
 #endif

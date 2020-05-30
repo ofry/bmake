@@ -3021,6 +3021,15 @@ getShellLaunchPrefix()
     }
 }
 
+char * getUnixPathCmd(const char *path)
+{
+    return str_concat(
+            "cygpath -u", str_concat("\"",
+                            str_concat(path, "\"", 0),
+                            0),
+                            STR_ADDSPACE);
+}
+
 #endif
 
 #include <stdint.h>
