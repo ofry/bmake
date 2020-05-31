@@ -959,7 +959,7 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
 #if (defined _WIN32 && ! defined __CYGWIN__)
     char *unix_val;
     char *error;
-    if (val && strlen(val) > 0 && val[1] == ':') {
+    if (val && strlen(val) > 0 && val[1] == ':'  && (val[2] == '/' || val[2] = '\\')) {
         unix_val = Cmd_Exec(getUnixPathCmd(val), &error);
     }
     else {
@@ -1192,7 +1192,7 @@ Var_Value(const char *name, GNode *ctxt, char **frp) {
 #if (defined _WIN32 && ! defined __CYGWIN__)
         char *p;
         const char *error;
-        if (raw[1] == ':') { // it is windows path
+        if ((raw[1] == ':') && (raw[2] == '/' || raw[2] = '\\')) { // it is windows path
             p = Cmd_Exec(getUnixPathCmd(raw), &error);
         }
         else {
@@ -2573,6 +2573,18 @@ ApplyModifiers(char *nstr, const char *tstr,
     const char *start;
     const char *cp;        /* Secondary pointer into str (place marker
 				 * for tstr) */
+#if (defined _WIN32 && ! defined __CYGWIN__)
+    char *unix_nstr;
+    char *error;
+    if (nstr && strlen(nstr) > 0 && nstr[1] == ':' && (nstr[2] == '/' || nstr[2] = '\\')) {
+        unix_nstr = Cmd_Exec(getUnixPathCmd(nstr), &error);
+    }
+    else {
+        unix_nstr = nstr;
+    }
+#else
+    char *unix_nstr = nstr;
+#endif
     char *newStr;    /* New value to return */
     char *ep;
     char termc;    /* Character which terminated scan */
@@ -2624,10 +2636,10 @@ ApplyModifiers(char *nstr, const char *tstr,
             if (rval != NULL && *rval) {
                 int used;
 
-                nstr = ApplyModifiers(nstr, rval,
+                unix_nstr = ApplyModifiers(unix_nstr, rval,
                                       0, 0, v, ctxt, flags, &used, freePtr);
-                if (nstr == var_Error
-                    || (nstr == varNoError && (flags & VARF_UNDEFERR) == 0)
+                if (unix_nstr == var_Error
+                    || (unix_nstr == varNoError && (flags & VARF_UNDEFERR) == 0)
                     || strlen(rval) != (size_t) used) {
                     free(freeIt);
                     goto out;        /* error already reported */
@@ -2645,7 +2657,7 @@ ApplyModifiers(char *nstr, const char *tstr,
         apply_mods:
         if (DEBUG(VAR)) {
             fprintf(debug_file, "Applying[%s] :%c to \"%s\"\n", v->name,
-                    *tstr, nstr);
+                    *tstr, unix_nstr);
         }
         newStr = var_Error;
         switch ((modifier = *tstr)) {
@@ -2721,7 +2733,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                             case '!':
                                 newStr = Cmd_Exec(pattern.rhs, &emsg);
                                 if (emsg)
-                                    Error(emsg, nstr);
+                                    Error(emsg, unix_nstr);
                                 else
                                     Var_Set(v->name, newStr, v_ctxt, 0);
                                 free(newStr);
@@ -2764,7 +2776,7 @@ ApplyModifiers(char *nstr, const char *tstr,
 
                 loop.errnum = flags & VARF_UNDEFERR;
                 loop.ctxt = ctxt;
-                newStr = VarModify(ctxt, &parsestate, nstr, VarLoopExpand,
+                newStr = VarModify(ctxt, &parsestate, unix_nstr, VarLoopExpand,
                                    &loop);
                 Var_Delete(loop.tvar, ctxt);
                 free(loop.tvar);
@@ -2783,12 +2795,12 @@ ApplyModifiers(char *nstr, const char *tstr,
                         np = bmake_strndup(cp, n + 1);
                         np[n] = '\0';
                         cp = tstr + 2 + n;
-                        Var_Set(np, nstr, ctxt, 0);
+                        Var_Set(np, unix_nstr, ctxt, 0);
                         free(np);
                     } else {
-                        Var_Set("_", nstr, ctxt, 0);
+                        Var_Set("_", unix_nstr, ctxt, 0);
                     }
-                    newStr = nstr;
+                    newStr = unix_nstr;
                     termc = *cp;
                     break;
                 }
@@ -2852,7 +2864,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                 if (nflags & VARF_WANTRES) {
                     newStr = Buf_Destroy(&buf, FALSE);
                 } else {
-                    newStr = nstr;
+                    newStr = unix_nstr;
                     Buf_Destroy(&buf, TRUE);
                 }
                 break;
@@ -2904,7 +2916,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                     newStr = varNoError;
                 free(UNCONST(pattern.rhs));
                 if (emsg)
-                    Error(emsg, nstr);
+                    Error(emsg, unix_nstr);
                 termc = *cp;
                 delim = '\0';
                 if (v->flags & VAR_JUNK) {
@@ -2964,7 +2976,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                         char *as;
                         int ac;
 
-                        av = brk_string(nstr, &ac, FALSE, &as);
+                        av = brk_string(unix_nstr, &ac, FALSE, &as);
                         snprintf(newStr, newStrSize, "%d", ac);
                         free(as);
                         free(av);
@@ -2975,14 +2987,14 @@ ApplyModifiers(char *nstr, const char *tstr,
                 } else if (estr[0] == '*' && estr[1] == '\0') {
                     /* Found ":[*]" */
                     parsestate.oneBigWord = TRUE;
-                    newStr = nstr;
+                    newStr = unix_nstr;
                     termc = *cp;
                     free(estr);
                     break;
                 } else if (estr[0] == '@' && estr[1] == '\0') {
                     /* Found ":[@]" */
                     parsestate.oneBigWord = FALSE;
-                    newStr = nstr;
+                    newStr = unix_nstr;
                     termc = *cp;
                     free(estr);
                     break;
@@ -3025,7 +3037,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                     if (seldata.start == 0 && seldata.end == 0) {
                         /* ":[0]" or perhaps ":[0..0]" */
                         parsestate.oneBigWord = TRUE;
-                        newStr = nstr;
+                        newStr = unix_nstr;
                         termc = *cp;
                         free(estr);
                         break;
@@ -3040,7 +3052,7 @@ ApplyModifiers(char *nstr, const char *tstr,
 		     * described by seldata.
 		     */
                     newStr = VarSelectWords(ctxt, &parsestate,
-                                            nstr, &seldata);
+                                            unix_nstr, &seldata);
 
                     termc = *cp;
                     free(estr);
@@ -3058,7 +3070,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                         utc = 0;
                         cp = tstr + 6;
                     }
-                    newStr = VarStrftime(nstr, 1, utc);
+                    newStr = VarStrftime(unix_nstr, 1, utc);
                     termc = *cp;
                 } else {
                     goto default_case;
@@ -3067,7 +3079,7 @@ ApplyModifiers(char *nstr, const char *tstr,
             case 'h':
                 cp = tstr + 1;    /* make sure it is set */
                 if (STRMOD_MATCH(tstr, "hash", 4)) {
-                    newStr = VarHash(nstr);
+                    newStr = VarHash(unix_nstr);
                     cp = tstr + 4;
                     termc = *cp;
                 } else {
@@ -3084,7 +3096,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                         utc = 0;
                         cp = tstr + 9;
                     }
-                    newStr = VarStrftime(nstr, 0, utc);
+                    newStr = VarStrftime(unix_nstr, 0, utc);
                     termc = *cp;
                 } else {
                     goto default_case;
@@ -3167,7 +3179,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                         pattern.lhs = pattern.rhs = "\032";
                         pattern.leftLen = pattern.rightLen = 1;
 
-                        newStr = VarModify(ctxt, &parsestate, nstr,
+                        newStr = VarModify(ctxt, &parsestate, unix_nstr,
                                            VarSubstitute,
                                            &pattern);
                     } else if (tstr[2] == endc || tstr[2] == ':') {
@@ -3176,25 +3188,25 @@ ApplyModifiers(char *nstr, const char *tstr,
 			 * ":tu", ":tl"
 			 */
                         if (tstr[1] == 'A') { /* absolute path */
-                            newStr = VarModify(ctxt, &parsestate, nstr,
+                            newStr = VarModify(ctxt, &parsestate, unix_nstr,
                                                VarRealpath, NULL);
                             cp = tstr + 2;
                             termc = *cp;
                         } else if (tstr[1] == 'u') {
-                            char *dp = bmake_strdup(nstr);
+                            char *dp = bmake_strdup(unix_nstr);
                             for (newStr = dp; *dp; dp++)
                                 *dp = toupper((unsigned char) *dp);
                             cp = tstr + 2;
                             termc = *cp;
                         } else if (tstr[1] == 'l') {
-                            char *dp = bmake_strdup(nstr);
+                            char *dp = bmake_strdup(unix_nstr);
                             for (newStr = dp; *dp; dp++)
                                 *dp = tolower((unsigned char) *dp);
                             cp = tstr + 2;
                             termc = *cp;
                         } else if (tstr[1] == 'W' || tstr[1] == 'w') {
                             parsestate.oneBigWord = (tstr[1] == 'W');
-                            newStr = nstr;
+                            newStr = unix_nstr;
                             cp = tstr + 2;
                             termc = *cp;
                         } else {
@@ -3297,12 +3309,12 @@ ApplyModifiers(char *nstr, const char *tstr,
                 }
                 if (DEBUG(VAR))
                     fprintf(debug_file, "Pattern[%s] for [%s] is [%s]\n",
-                            v->name, nstr, pattern);
+                            v->name, unix_nstr, pattern);
                 if (*tstr == 'M') {
-                    newStr = VarModify(ctxt, &parsestate, nstr, VarMatch,
+                    newStr = VarModify(ctxt, &parsestate, unix_nstr, VarMatch,
                                        pattern);
                 } else {
-                    newStr = VarModify(ctxt, &parsestate, nstr, VarNoMatch,
+                    newStr = VarModify(ctxt, &parsestate, unix_nstr, VarNoMatch,
                                        pattern);
                 }
                 free(pattern);
@@ -3361,7 +3373,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                 }
 
                 termc = *cp;
-                newStr = VarModify(ctxt, &tmpparsestate, nstr,
+                newStr = VarModify(ctxt, &tmpparsestate, unix_nstr,
                                    VarSubstitute,
                                    &pattern);
 
@@ -3492,7 +3504,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                     pattern.nsub = 10;
                 pattern.matches = bmake_malloc(pattern.nsub *
                                                sizeof(regmatch_t));
-                newStr = VarModify(ctxt, &tmpparsestate, nstr,
+                newStr = VarModify(ctxt, &tmpparsestate, unix_nstr,
                                    VarRESubstitute,
                                    &pattern);
                 regfree(&pattern.re);
@@ -3505,7 +3517,7 @@ ApplyModifiers(char *nstr, const char *tstr,
             case 'q':
             case 'Q':
                 if (tstr[1] == endc || tstr[1] == ':') {
-                    newStr = VarQuote(nstr, modifier == 'q');
+                    newStr = VarQuote(unix_nstr, modifier == 'q');
                     cp = tstr + 1;
                     termc = *cp;
                     break;
@@ -3513,7 +3525,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                 goto default_case;
             case 'T':
                 if (tstr[1] == endc || tstr[1] == ':') {
-                    newStr = VarModify(ctxt, &parsestate, nstr, VarTail,
+                    newStr = VarModify(ctxt, &parsestate, unix_nstr, VarTail,
                                        NULL);
                     cp = tstr + 1;
                     termc = *cp;
@@ -3522,7 +3534,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                 goto default_case;
             case 'H':
                 if (tstr[1] == endc || tstr[1] == ':') {
-                    newStr = VarModify(ctxt, &parsestate, nstr, VarHead,
+                    newStr = VarModify(ctxt, &parsestate, unix_nstr, VarHead,
                                        NULL);
                     cp = tstr + 1;
                     termc = *cp;
@@ -3531,7 +3543,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                 goto default_case;
             case 'E':
                 if (tstr[1] == endc || tstr[1] == ':') {
-                    newStr = VarModify(ctxt, &parsestate, nstr, VarSuffix,
+                    newStr = VarModify(ctxt, &parsestate, unix_nstr, VarSuffix,
                                        NULL);
                     cp = tstr + 1;
                     termc = *cp;
@@ -3540,7 +3552,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                 goto default_case;
             case 'R':
                 if (tstr[1] == endc || tstr[1] == ':') {
-                    newStr = VarModify(ctxt, &parsestate, nstr, VarRoot,
+                    newStr = VarModify(ctxt, &parsestate, unix_nstr, VarRoot,
                                        NULL);
                     cp = tstr + 1;
                     termc = *cp;
@@ -3559,7 +3571,7 @@ ApplyModifiers(char *nstr, const char *tstr,
                         n = 0;
                         cp = tstr + 5;
                     }
-                    newStr = VarRange(nstr, n);
+                    newStr = VarRange(unix_nstr, n);
                     termc = *cp;
                     break;
                 }
@@ -3579,12 +3591,12 @@ ApplyModifiers(char *nstr, const char *tstr,
                 } else {
                     goto bad_modifier;
                 }
-                newStr = VarOrder(nstr, otype);
+                newStr = VarOrder(unix_nstr, otype);
                 break;
             }
             case 'u':
                 if (tstr[1] == endc || tstr[1] == ':') {
-                    newStr = VarUniq(nstr);
+                    newStr = VarUniq(unix_nstr);
                     cp = tstr + 1;
                     termc = *cp;
                     break;
@@ -3595,9 +3607,9 @@ ApplyModifiers(char *nstr, const char *tstr,
                 if (tstr[1] == 'h' && (tstr[2] == endc || tstr[2] == ':')) {
                     const char *emsg;
                     if (flags & VARF_WANTRES) {
-                        newStr = Cmd_Exec(nstr, &emsg);
+                        newStr = Cmd_Exec(unix_nstr, &emsg);
                         if (emsg)
-                            Error(emsg, nstr);
+                            Error(emsg, unix_nstr);
                     } else
                         newStr = varNoError;
                     cp = tstr + 2;
@@ -3661,10 +3673,10 @@ ApplyModifiers(char *nstr, const char *tstr,
 		 */
                     termc = *--cp;
                     delim = '\0';
-                    if (pattern.leftLen == 0 && *nstr == '\0') {
-                        newStr = nstr;    /* special case */
+                    if (pattern.leftLen == 0 && *unix_nstr == '\0') {
+                        newStr = unix_nstr;    /* special case */
                     } else {
-                        newStr = VarModify(ctxt, &parsestate, nstr,
+                        newStr = VarModify(ctxt, &parsestate, unix_nstr,
                                            VarSYSVMatch,
                                            &pattern);
                     }
@@ -3688,19 +3700,19 @@ ApplyModifiers(char *nstr, const char *tstr,
                     v->name, modifier, newStr);
         }
 
-        if (newStr != nstr) {
+        if (newStr != unix_nstr) {
             if (*freePtr) {
-                free(nstr);
+                free(unix_nstr);
                 *freePtr = NULL;
             }
-            nstr = newStr;
-            if (nstr != var_Error && nstr != varNoError) {
-                *freePtr = nstr;
+            unix_nstr = newStr;
+            if (unix_nstr != var_Error && unix_nstr != varNoError) {
+                *freePtr = unix_nstr;
             }
         }
         if (termc == '\0' && endc != '\0') {
             Error("Unclosed variable specification (expecting '%c') for \"%s\" (value \"%s\") modifier %c", endc,
-                  v->name, nstr, modifier);
+                  v->name, unix_nstr, modifier);
         } else if (termc == ':') {
             cp++;
         }
@@ -3708,7 +3720,7 @@ ApplyModifiers(char *nstr, const char *tstr,
     }
     out:
     *lengthPtr = tstr - start;
-    return (nstr);
+    return (unix_nstr);
 
     bad_modifier:
     /* "{(" */
