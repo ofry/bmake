@@ -959,7 +959,7 @@ Var_Set(const char *name, const char *val, GNode *ctxt, int flags) {
 #if (defined _WIN32 && ! defined __CYGWIN__)
     char *unix_val;
     char *error;
-    if (val && strlen(val) > 0 && val[1] == ':'  && (val[2] == '/' || val[2] = '\\')) {
+    if (val && strlen(val) > 0 && val[1] == ':'  && (val[2] == '/' || val[2] == '\\')) {
         unix_val = Cmd_Exec(getUnixPathCmd(val), &error);
     }
     else {
@@ -1192,7 +1192,7 @@ Var_Value(const char *name, GNode *ctxt, char **frp) {
 #if (defined _WIN32 && ! defined __CYGWIN__)
         char *p;
         const char *error;
-        if ((raw[1] == ':') && (raw[2] == '/' || raw[2] = '\\')) { // it is windows path
+        if ((raw[1] == ':') && (raw[2] == '/' || raw[2] == '\\')) { // it is windows path
             p = Cmd_Exec(getUnixPathCmd(raw), &error);
         }
         else {
@@ -2576,7 +2576,7 @@ ApplyModifiers(char *nstr, const char *tstr,
 #if (defined _WIN32 && ! defined __CYGWIN__)
     char *unix_nstr;
     char *error;
-    if (nstr && strlen(nstr) > 0 && nstr[1] == ':' && (nstr[2] == '/' || nstr[2] = '\\')) {
+    if (nstr && strlen(nstr) > 0 && nstr[1] == ':' && (nstr[2] == '/' || nstr[2] == '\\')) {
         unix_nstr = Cmd_Exec(getUnixPathCmd(nstr), &error);
     }
     else {
