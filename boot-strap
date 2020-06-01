@@ -421,7 +421,7 @@ op_build() {
 
 op_test() {
 	[ -x bmake ] || op_build
-	Bmake test || echo "\n\nSome tests failed! But we continue build.\n\n\n"
+	Bmake test || echo "Some tests failed! But we continue build."
 }
 
 op_clean() {

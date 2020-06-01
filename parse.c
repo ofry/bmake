@@ -2413,13 +2413,20 @@ ParseSetParseFile(const char *filename)
 	memcpy(dirname, filename, len);
 	dirname[len] = '\0';
 #if (defined _WIN32 && ! defined __CYGWIN__)
-        pdirname = str_replace_char(dirname, '\\', '/');
-            if (pdirname[1] == ':') { // create msys-style windows path
-                pdirname[1] = pdirname[0];
-                pdirname[0] = '/';
-            }
+//        pdirname = str_replace_char(dirname, '\\', '/');
+//            if (pdirname[1] == ':') { // create msys-style windows path
+//                pdirname[1] = pdirname[0];
+//                pdirname[0] = '/';
+//            }
+    char *error;
+    if (dirname && strlen(dirname) > 0 && dirname[1] == ':'  && (dirname[2] == '/' || dirname[2] == '\\')) {
+        pdirname = Cmd_Exec(getUnixPathCmd(dirname), &error);
+    }
+    else {
+        pdirname = dirname;
+    }
 #else
-        pobjdir = objdir;
+        pdirname = dirname;
 #endif
 	Var_Set(".PARSEDIR", pd = pdirname, VAR_GLOBAL, 0);
 	Var_Set(".PARSEFILE", pf = slash + 1, VAR_GLOBAL, 0);
