@@ -145,7 +145,7 @@ MAN1= ${MAN}
 .if (${PROG} != "make")
 CLEANFILES+= my.history
 .if make(${MAN}) || !exists(${srcdir}/${MAN})
-my.history: ${MAKEFILE}
+my.history: 
 	@(echo ".Nm"; \
 	echo "is derived from NetBSD"; \
 	echo ".Xr make 1 ."; \
