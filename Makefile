@@ -1,6 +1,6 @@
 #	$Id: Makefile,v 1.99 2017/08/13 20:12:53 sjg Exp $
 
-PROG=	bmake
+PROG=	bmake.exe
 
 SRCS= \
 	arch.c \
@@ -145,7 +145,7 @@ MAN1= ${MAN}
 .if (${PROG} != "make")
 CLEANFILES+= my.history
 .if make(${MAN}) || !exists(${srcdir}/${MAN})
-my.history: 
+my.history:
 	@(echo ".Nm"; \
 	echo "is derived from NetBSD"; \
 	echo ".Xr make 1 ."; \
