@@ -1,7 +1,6 @@
 #	$Id: Makefile,v 1.99 2017/08/13 20:12:53 sjg Exp $
 
 PROG=	bmake
-MKSRC?= ${SRCTOP:tA}/mk
 
 SRCS= \
 	arch.c \
@@ -214,9 +213,9 @@ beforeinstall:
 	test -d ${DESTDIR}${MANDEST} || ${INSTALL} -m 775 -d ${DESTDIR}${MANDEST}
 
 install-mk:
-.if exists(${MKSRC}/install-mk)
+.if exists(${srcdir}/mk/install-mk)
 	test -d ${DESTDIR}${SHARE_MK} || ${INSTALL} -m 775 -d ${DESTDIR}${SHARE_MK}
-	sh ${MKSRC}/install-mk -v -m 644 ${DESTDIR}${SHARE_MK}
+	sh ${srcdir}/mk/install-mk -v -m 644 ${DESTDIR}${SHARE_MK}
 .else
 	@echo need to unpack mk.tar.gz under ${srcdir} or set MKSRC; false
 .endif
