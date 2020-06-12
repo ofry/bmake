@@ -213,12 +213,8 @@ beforeinstall:
 	test -d ${DESTDIR}${MANDEST} || ${INSTALL} -m 775 -d ${DESTDIR}${MANDEST}
 
 install-mk:
-.if exists(${srcdir}/mk/install-mk)
 	test -d ${DESTDIR}${SHARE_MK} || ${INSTALL} -m 775 -d ${DESTDIR}${SHARE_MK}
 	sh ${srcdir}/mk/install-mk -v -m 644 ${DESTDIR}${SHARE_MK}
-.else
-	@echo need to unpack mk.tar.gz under ${srcdir} or set MKSRC; false
-.endif
 # end-delete2
 
 # A simple unit-test driver to help catch regressions
