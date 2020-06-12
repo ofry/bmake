@@ -41,8 +41,6 @@ scriptversion=2018-03-11.20; # UTC
 # This script is compatible with the BSD install script, but was written
 # from scratch.
 
-dir=`pwd`
-
 tab='	'
 nl='
 '
@@ -264,7 +262,6 @@ do
     # if $src (and thus $dsttmp) contains '*'.
     if test ! -f "$src" && test ! -d "$src"; then
       echo "$0: $src does not exist." >&2
-      echo "we on $PWD"
       exit 1
     fi
 
