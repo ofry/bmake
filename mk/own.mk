@@ -194,7 +194,7 @@ SHAREOWN?=	${BINOWN}
 SHAREMODE?=	${NONBINMODE}
 
 COPY?=		-c
-STRIP_FLAG?=	-s
+STRIP_FLAG?=
 
 .if ${TARGET_OSNAME} == "NetBSD"
 .if exists(/usr/libexec/ld.elf_so)
