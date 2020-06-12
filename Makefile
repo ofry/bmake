@@ -1,6 +1,6 @@
 #	$Id: Makefile,v 1.99 2017/08/13 20:12:53 sjg Exp $
 
-PROG=	bmake.exe
+PROG=	bmake
 
 SRCS= \
 	arch.c \

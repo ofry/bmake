@@ -179,7 +179,7 @@ proginstall:
 	[ -d ${DESTDIR}${BINDIR} ] || \
 	${INSTALL} -d ${PROG_INSTALL_OWN} -m 775 ${DESTDIR}${BINDIR}
 	${INSTALL} ${COPY} ${STRIP_FLAG} ${PROG_INSTALL_OWN} -m ${BINMODE} \
-	    ${PROG} ${DESTDIR}${BINDIR}/${PROG_NAME}
+	    ${OBJTOP:tA}/${PROG} ${DESTDIR}${BINDIR}/${PROG_NAME}
 .endif
 .if defined(HIDEGAME)
 	(cd ${DESTDIR}/usr/games; rm -f ${PROG}; ln -s dm ${PROG})
