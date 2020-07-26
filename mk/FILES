@@ -49,6 +49,9 @@ sys/Generic.mk
 sys/HP-UX.mk
 sys/IRIX.mk
 sys/Linux.mk
+sys/MINGW32.mk
+sys/MINGW64.mk
+sys/MSYS.mk
 sys/NetBSD.mk
 sys/OSF1.mk
 sys/OpenBSD.mk
