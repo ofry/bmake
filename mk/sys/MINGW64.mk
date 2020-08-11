@@ -27,7 +27,7 @@ DSHLIBEXT =	.dll
 AR=		ar
 ARFLAGS=	rl
 RANLIB=		ranlib
-LD_shared= -Bshareable
+LD_shared= -Bshareable -shared
 LD_so= dll.${SHLIB_FULLVERSION}
 LD_solink= dll
 
