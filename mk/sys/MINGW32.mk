@@ -15,6 +15,7 @@ NEED_SOLINKS=yes
 LD_X=
 LD_x=
 SHLIB_LD = ${CC}
+SHLIB_LDADD?= ${LDADD}
 
 .SUFFIXES: .out .a .ln .o .c ${CXX_SUFFIXES} .F .f .r .y .l .s .S .cl .p .h .sh .m4
 
