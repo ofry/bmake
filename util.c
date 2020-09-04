@@ -3030,6 +3030,15 @@ char * getUnixPathCmd(const char *path)
                             STR_ADDSPACE);
 }
 
+char * getWindowsPathCmd(const char *path)
+{
+    return str_concat(
+            "cygpath -m", str_concat("\"",
+                            str_concat(path, "\"", 0),
+                            0),
+                            STR_ADDSPACE);
+}
+
 #endif
 
 #include <stdint.h>
