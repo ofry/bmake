@@ -2287,11 +2287,12 @@ Parse_include_file(char *file, Boolean isSystem, Boolean depinc, int silent)
     fd = open(fullname, O_RDONLY);
 #endif
     if (fd == -1) {
-	if (!silent)
+	if (!silent) {
 	    Parse_Error(PARSE_FATAL, "Cannot open %s", fullname);
 #if (defined _WIN32 && ! defined __CYGWIN__)
         Parse_Error(PARSE_FATAL, "Cannot open %s", Cmd_Exec(getWindowsPathCmd(fullname), &error));
 #endif
+    }
 	free(fullname);
 	return;
     }
