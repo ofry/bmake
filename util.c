@@ -3033,7 +3033,7 @@ char * getUnixPathCmd(const char *path)
 char * getWindowsPathCmd(const char *path)
 {
     return str_concat(
-            "cygpath -m", str_concat("\"",
+            "cygpath -w", str_concat("\"",
                             str_concat(path, "\"", 0),
                             0),
                             STR_ADDSPACE);
