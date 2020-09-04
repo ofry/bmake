@@ -2278,6 +2278,7 @@ Parse_include_file(char *file, Boolean isSystem, Boolean depinc, int silent)
 
     /* Actually open the file... */
 #if (defined _WIN32 && ! defined __CYGWIN__)
+    char *error;
     fd = open(fullname, O_RDONLY);
     if (fd == -1) {
         fd = open(Cmd_Exec(getWindowsPathCmd(fullname), &error), O_RDONLY);
