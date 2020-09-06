@@ -2278,23 +2278,24 @@ Parse_include_file(char *file, Boolean isSystem, Boolean depinc, int silent)
 
     /* Actually open the file... */
 #if (defined _WIN32 && ! defined __CYGWIN__)
-    char *error;
+    const char *error;
+    char *windowsFullName;
     fd = open(fullname, O_RDONLY);
     if (fd == -1) {
-        fd = open(Cmd_Exec(getWindowsPathCmd(fullname), &error), O_RDONLY);
+        windowsFullName = Cmd_Exec(getWindowsPathCmd(fullname), &error);
+        if (windowsFullName && strlen(windowsFullName) > 0) {
+            fd = open(windowsFullName, O_RDONLY);
+        }
     }
 #else
     fd = open(fullname, O_RDONLY);
 #endif
     if (fd == -1) {
-	if (!silent) {
-	    Parse_Error(PARSE_FATAL, "Cannot open %s", fullname);
-#if (defined _WIN32 && ! defined __CYGWIN__)
-        Parse_Error(PARSE_FATAL, "Cannot open %s", Cmd_Exec(getWindowsPathCmd(fullname), &error));
-#endif
-    }
-	free(fullname);
-	return;
+        if (!silent) {
+            Parse_Error(PARSE_FATAL, "Cannot open %s", fullname);
+        }
+        free(fullname);
+        return;
     }
 
     /* load it */
