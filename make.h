@@ -570,4 +570,8 @@ extern int system_np(const char* command, int timeout_milliseconds,
               char* stdout_data, int stdout_data_size,
               char* stderr_data, int stderr_data_size, int* exit_code);
 
+extern char * getUnixPathCmd(const char *path);
+
+extern char * getWindowsPathCmd(const char *path);
+
 #endif /* _MAKE_H_ */
